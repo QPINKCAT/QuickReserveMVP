@@ -9,7 +9,7 @@ import java.util.List;
 
 @NoRepositoryBean
 public interface ActiveRepository<T, ID> extends JpaRepository<T, ID> {
-    public T findByIdAndDeletedAtIsNotNull(ID id);
-    public Page<T> findAllByDeletedAtIsNotNull(Pageable pageable);
-    public List<T> findAllByDeletedAtIsNull();
+    T findByIdAndActive(ID id, Boolean active);
+    Page<T> findAllByActive(Pageable pageable, Boolean active);
+    List<T> findAllByActive(Boolean active);
 }

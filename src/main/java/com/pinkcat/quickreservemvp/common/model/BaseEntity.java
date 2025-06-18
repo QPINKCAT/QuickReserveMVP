@@ -24,16 +24,14 @@ public abstract class BaseEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long createdId;
-    private Long updatedId;
-
     @CreatedDate
     private Long createdAt = Instant.now().toEpochMilli();
 
     @LastModifiedDate
     private Long updatedAt = Instant.now().toEpochMilli();
 
-    private Long deletedAt = null;
+    @Column(columnDefinition = "default true")
+    private Boolean active = true;
 
     @Override
     public final boolean equals(Object o) {

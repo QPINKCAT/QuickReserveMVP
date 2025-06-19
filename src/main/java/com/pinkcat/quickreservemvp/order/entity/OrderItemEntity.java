@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 @Entity
-@Table(name = "order")
+@Table(name = "order_item")
 @Getter
 @Builder
 @AllArgsConstructor

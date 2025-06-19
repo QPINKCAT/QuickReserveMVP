@@ -1,6 +1,6 @@
 package com.pinkcat.quickreservemvp.order.entity;
 
-import com.pinkcat.quickreservemvp.common.enums.StatusEnum;
+import com.pinkcat.quickreservemvp.common.enums.OrderStatusEnum;
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
 import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
 import com.pinkcat.quickreservemvp.user.entity.UserEntity;
@@ -45,7 +45,7 @@ public class OrderItemEntity extends BaseEntity {
 
     @Comment("주문 상태")
     @Column(name = "order_item_status", nullable = false)
-    private StatusEnum status;
+    private OrderStatusEnum status;
 
     @Comment("유저")
     @ManyToOne(fetch = FetchType.LAZY)

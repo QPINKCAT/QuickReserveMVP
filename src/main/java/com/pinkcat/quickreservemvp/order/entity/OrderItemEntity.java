@@ -56,4 +56,9 @@ public class OrderItemEntity extends BaseEntity {
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "product_pk", nullable = false, updatable = false)
     private ProductEntity product;
+
+    @Comment("주문")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_pk", nullable = false, updatable = false)
+    private OrderEntity order;
 }

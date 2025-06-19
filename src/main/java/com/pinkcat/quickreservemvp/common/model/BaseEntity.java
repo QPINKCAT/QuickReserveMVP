@@ -1,8 +1,10 @@
 package com.pinkcat.quickreservemvp.common.model;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.Hibernate;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -22,7 +24,7 @@ public abstract class BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long pk;
 
     @CreatedDate
     private Long createdAt = Instant.now().toEpochMilli();
@@ -30,7 +32,7 @@ public abstract class BaseEntity implements Serializable {
     @LastModifiedDate
     private Long updatedAt = Instant.now().toEpochMilli();
 
-    @Column(columnDefinition = "default true")
+    @Column(columnDefinition = "boolean default true")
     private Boolean active = true;
 
     @Override
@@ -41,7 +43,7 @@ public abstract class BaseEntity implements Serializable {
         Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
         if (thisEffectiveClass != oEffectiveClass) return false;
         BaseEntity that = (BaseEntity) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
+        return getPk() != null && Objects.equals(getPk(), that.getPk());
     }
 
     @Override

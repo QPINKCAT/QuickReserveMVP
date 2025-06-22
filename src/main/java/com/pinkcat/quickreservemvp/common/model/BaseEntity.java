@@ -11,7 +11,8 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.io.Serializable;
-import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Objects;
 
 @MappedSuperclass
@@ -26,11 +27,13 @@ public abstract class BaseEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pk;
 
+    @Column(name = "createdAt", nullable = false, updatable = false)
     @CreatedDate
-    private Long createdAt = Instant.now().toEpochMilli();
+    private LocalDateTime createdAt;
 
+    @Column(name = "updatedAt")
     @LastModifiedDate
-    private Long updatedAt = Instant.now().toEpochMilli();
+    private LocalDateTime updatedAt;
 
     @Column(columnDefinition = "boolean default true")
     private Boolean active = true;
@@ -49,5 +52,15 @@ public abstract class BaseEntity implements Serializable {
     @Override
     public final int hashCode() {
         return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 }

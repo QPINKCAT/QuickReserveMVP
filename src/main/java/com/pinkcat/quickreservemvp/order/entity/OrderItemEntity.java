@@ -26,10 +26,10 @@ import org.hibernate.annotations.Comment;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderItemEntity extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_order_item_pk")
-    private Long orderItemPk;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "product_order_item_pk")
+//    private Long orderItemPk;
 
     @Comment("할인전 가격")
     @Column(name = "product_order_item_original_price")

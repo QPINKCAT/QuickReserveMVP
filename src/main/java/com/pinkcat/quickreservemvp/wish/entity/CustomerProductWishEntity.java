@@ -25,10 +25,10 @@ import org.hibernate.annotations.Comment;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerProductWishEntity extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "customer_product_wish_pk")
-    private Long customerProductWishPk;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "customer_product_wish_pk")
+//    private Long customerProductWishPk;
 
     @Comment("고객")
     @ManyToOne(fetch = FetchType.LAZY)

@@ -25,10 +25,10 @@ import org.hibernate.annotations.Comment;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaymentEntity extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "payment_pk")
-    private Long paymentPk;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "payment_pk")
+//    private Long paymentPk;
 
     private PaymentStatusEnum status;
 

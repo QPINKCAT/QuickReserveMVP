@@ -25,10 +25,10 @@ import org.hibernate.annotations.Comment;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CartEntity extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cart_item_pk")
-    private Long cartItemPk;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "cart_item_pk")
+//    private Long cartItemPk;
 
     @Comment("수량")
     @Column(name = "cart_item_quantity", nullable = false)

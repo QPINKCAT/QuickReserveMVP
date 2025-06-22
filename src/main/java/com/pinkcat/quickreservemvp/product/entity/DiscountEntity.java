@@ -15,9 +15,10 @@ import org.hibernate.annotations.Comment;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DiscountEntity extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long discountPk;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "discount_pk")
+//    private Long discountPk;
 
     @Comment("할인이 적용된 가격")
     @Column(name = "discount_price")

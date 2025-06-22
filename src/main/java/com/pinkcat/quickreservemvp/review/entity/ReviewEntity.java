@@ -26,10 +26,10 @@ import org.hibernate.annotations.Comment;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ReviewEntity extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "customer_product_review_pk")
-    private Long reviewPk;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "customer_product_review_pk")
+//    private Long reviewPk;
 
     @Comment("평점, min : 1, max : 10")
     @Column(name = "customer_product_review_rating", nullable = false)

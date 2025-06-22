@@ -23,10 +23,10 @@ import org.hibernate.annotations.Comment;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomerEntity extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "customer_pk")
-    private Long customerPk;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "customer_pk")
+//    private Long customerPk;
 
     @Comment("고객 아이디")
     @Column(name = "customer_id", length = 320, unique = true, nullable = false)

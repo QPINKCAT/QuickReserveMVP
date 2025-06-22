@@ -12,9 +12,9 @@ import org.hibernate.annotations.Comment;
 
 @Entity
 public class ProductEntity extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long productPk;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Long productPk;
 
     @Comment("상품명")
     @Column(name = "product_name", length = 30, unique = true, nullable = false)

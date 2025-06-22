@@ -2,7 +2,7 @@ package com.pinkcat.quickreservemvp.wish.entity;
 
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
 import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
-import com.pinkcat.quickreservemvp.user.entity.UserEntity;
+import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -19,21 +19,21 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 @Entity
-@Table(name = "user_product_wish")
+@Table(name = "customer_product_wish")
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserProductWishEntity extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_product_wish_pk")
-    private Long userProductWishPk;
+public class CustomerProductWishEntity extends BaseEntity {
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "customer_product_wish_pk")
+//    private Long customerProductWishPk;
 
-    @Comment("유저")
+    @Comment("고객")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_pk", nullable = false, updatable = false)
-    private UserEntity user;
+    @JoinColumn(name = "customer_pk", nullable = false, updatable = false)
+    private CustomerEntity customer;
 
     @Comment("상품")
     @ManyToOne (fetch = FetchType.LAZY)

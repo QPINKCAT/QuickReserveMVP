@@ -2,15 +2,22 @@ package com.pinkcat.quickreservemvp.product.entity;
 
 import com.pinkcat.quickreservemvp.common.enums.ProductStatusEnum;
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
 import java.sql.Timestamp;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 @Entity
+@Table(name = "product")
+@Getter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class ProductEntity extends BaseEntity {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)

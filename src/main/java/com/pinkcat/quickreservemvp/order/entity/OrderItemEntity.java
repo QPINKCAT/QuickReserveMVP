@@ -7,9 +7,8 @@ import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -43,6 +42,7 @@ public class OrderItemEntity extends BaseEntity {
     @Column(name = "product_order_item_quantity")
     private Integer quantity;
 
+    @Enumerated(EnumType.STRING)
     @Comment("주문 상태")
     @Column(name = "product_order_item_status", nullable = false)
     private OrderStatusEnum status;

@@ -4,9 +4,8 @@ import com.pinkcat.quickreservemvp.common.enums.GenderEnum;
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -50,6 +49,7 @@ public class CustomerEntity extends BaseEntity {
     @Pattern(regexp = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$", message = "올바른 이메일 주소 형식이 아닙니다.")
     private String email;
 
+    @Enumerated(EnumType.STRING)
     @Comment("고객 성별")
     @Column(name = "customer_gender")
     private GenderEnum gender;

@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface ProductRepository extends ActiveRepository<ProductEntity, Long> {
 
-    ProductEntity findByProductPk(@Param("productPK") Long productPk);
+    ProductEntity findByPk(Long pk);
 }

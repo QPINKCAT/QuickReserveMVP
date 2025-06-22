@@ -2,7 +2,7 @@ package com.pinkcat.quickreservemvp.review.entity;
 
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
 import com.pinkcat.quickreservemvp.order.entity.OrderItemEntity;
-import com.pinkcat.quickreservemvp.user.entity.UserEntity;
+import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 @Entity
-@Table(name = "user_product_review")
+@Table(name = "customer_product_review")
 @Getter
 @Builder
 @AllArgsConstructor
@@ -28,24 +28,24 @@ import org.hibernate.annotations.Comment;
 public class ReviewEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_product_review_pk")
+    @Column(name = "customer_product_review_pk")
     private Long reviewPk;
 
     @Comment("평점, min : 1, max : 10")
-    @Column(name = "user_product_review_rating", nullable = false)
+    @Column(name = "customer_product_review_rating", nullable = false)
     private Integer rating;
 
     @Comment("리뷰")
-    @Column(name = "user_product_review_comment")
+    @Column(name = "customer_product_review_comment")
     private String comment;
 
-    @Comment("유저")
+    @Comment("주문아이템")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_item_pk", nullable = false, updatable = false)
     private OrderItemEntity orderItem;
 
-    @Comment("유저")
+    @Comment("고객")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_pk", nullable = false, updatable = false)
-    private UserEntity user;
+    @JoinColumn(name = "customer_pk", nullable = false, updatable = false)
+    private CustomerEntity customer;
 }

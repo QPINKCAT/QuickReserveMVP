@@ -1,7 +1,7 @@
 package com.pinkcat.quickreservemvp.order.entity;
 
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
-import com.pinkcat.quickreservemvp.user.entity.UserEntity;
+import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -33,8 +33,8 @@ public class OrderEntity extends BaseEntity {
     @Column(name = "order_num", length = 10, unique = true, nullable = false)
     private String orderNum;
 
-    @Comment("유저")
+    @Comment("고객")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_pk", nullable = false, updatable = false)
-    private UserEntity user;
+    @JoinColumn(name = "customer_pk", nullable = false, updatable = false)
+    private CustomerEntity customer;
 }

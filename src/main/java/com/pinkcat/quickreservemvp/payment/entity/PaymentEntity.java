@@ -34,6 +34,6 @@ public class PaymentEntity extends BaseEntity {
 
     @Comment("유저")
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_item_pk", nullable = false, updatable = false)
+    @JoinColumn(name = "product_order_item_pk", nullable = false, updatable = false)
     private OrderItemEntity orderItem;
 }

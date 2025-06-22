@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 @Entity
-@Table(name = "order_item")
+@Table(name = "product_order_item")
 @Getter
 @Builder
 @AllArgsConstructor
@@ -28,23 +28,23 @@ import org.hibernate.annotations.Comment;
 public class OrderItemEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_item_pk")
+    @Column(name = "product_order_item_pk")
     private Long orderItemPk;
 
     @Comment("할인전 가격")
-    @Column(name = "order_item_original_price")
+    @Column(name = "product_order_item_original_price")
     private Integer originalPrice;
 
     @Comment("할인 가격")
-    @Column(name = "order_item_saled_price")
+    @Column(name = "product_order_item_saled_price")
     private Integer saledPrice;
 
     @Comment("수량")
-    @Column(name = "order_item_quantity")
+    @Column(name = "product_order_item_quantity")
     private Integer quantity;
 
     @Comment("주문 상태")
-    @Column(name = "order_item_status", nullable = false)
+    @Column(name = "product_order_item_status", nullable = false)
     private OrderStatusEnum status;
 
     @Comment("고객")

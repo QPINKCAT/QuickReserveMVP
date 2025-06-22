@@ -41,7 +41,7 @@ public class ReviewEntity extends BaseEntity {
 
     @Comment("주문아이템")
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_item_pk", nullable = false, updatable = false)
+    @JoinColumn(name = "product_order_item_pk", nullable = false, updatable = false)
     private OrderItemEntity orderItem;
 
     @Comment("고객")

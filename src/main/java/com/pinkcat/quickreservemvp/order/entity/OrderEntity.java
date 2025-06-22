@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 @Entity
-@Table(name = "order")
+@Table(name = "product_order")
 @Getter
 @Builder
 @AllArgsConstructor
@@ -26,11 +26,11 @@ import org.hibernate.annotations.Comment;
 public class OrderEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_pk")
+    @Column(name = "product_order_pk")
     private Long orderPk;
 
     @Comment("주문번호")
-    @Column(name = "order_num", length = 10, unique = true, nullable = false)
+    @Column(name = "product_order_num", length = 10, unique = true, nullable = false)
     private String orderNum;
 
     @Comment("고객")

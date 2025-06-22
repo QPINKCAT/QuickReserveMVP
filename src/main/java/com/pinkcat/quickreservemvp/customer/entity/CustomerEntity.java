@@ -36,7 +36,7 @@ public class CustomerEntity extends BaseEntity {
     private String name;
 
     @Comment("고객 비밀번호")
-    @Column(name = "customer_pw", length = 20, unique = true, nullable = false)
+    @Column(name = "customer_password", length = 20, unique = true, nullable = false)
     private String password;
 
     @Comment("고객 핸드폰번호")

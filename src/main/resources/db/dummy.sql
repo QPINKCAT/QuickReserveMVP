@@ -6,7 +6,7 @@ INSERT INTO ADMIN (ADMIN_ID, ADMIN_NAME, ADMIN_PASSWORD, CREATED_AT, ACTIVE) VAL
 ('admin4@example.com', '관리자4', 'password4', '2025-06-21 12:58:28', 1),
 ('admin5@example.com', '관리자5', 'password5', '2025-06-21 12:58:28', 1);
 
-INSERT INTO CUSTOMER (CUSTOMER_ID, CUSTOMER_NAME, CUSTOMER_PASSWORD, CUSTOMER_PHONE_NUM, CUSTOMER_EMAIL, CUSTOMER_GENDER, CREATED_AT, ACTIVE) VALUES 
+INSERT INTO CUSTOMER (CUSTOMER_ID, CUSTOMER_NAME, CUSTOMER_PASSWORD, CUSTOMER_PHONE_NUMBER, CUSTOMER_EMAIL, CUSTOMER_GENDER, CREATED_AT, ACTIVE) VALUES
 ('customer1@example.com', '고객1', 'pass1', '01023718431', 'customer1@example.com', 'MALE', '2025-06-21 12:58:28', 1),
 ('customer2@example.com', '고객2', 'pass2', '01060992979', 'customer2@example.com', 'MALE', '2025-06-21 12:58:28', 1),
 ('customer3@example.com', '고객3', 'pass3', '01058181396', 'customer3@example.com', 'FEMALE', '2025-06-21 12:58:28', 1),

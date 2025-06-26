@@ -1,7 +1,7 @@
 package com.pinkcat.quickreservemvp.order.entity;
 
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
-import com.pinkcat.quickreservemvp.user.entity.UserEntity;
+import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,23 +18,23 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 @Entity
-@Table(name = "order")
+@Table(name = "product_order")
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderEntity extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_pk")
-    private Long orderPk;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Column(name = "product_order_pk")
+//    private Long orderPk;
 
     @Comment("주문번호")
-    @Column(name = "order_num", length = 10, unique = true, nullable = false)
+    @Column(name = "product_order_num", length = 10, unique = true, nullable = false)
     private String orderNum;
 
-    @Comment("유저")
+    @Comment("고객")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_pk", nullable = false, updatable = false)
-    private UserEntity user;
+    @JoinColumn(name = "customer_pk", nullable = false, updatable = false)
+    private CustomerEntity customer;
 }

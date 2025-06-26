@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 public class PinkCatException extends RuntimeException {
 
-    private HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
+    private HttpStatus httpStatus = HttpStatus.CONFLICT;
     private ErrorMessageCode errorMessageCode = ErrorMessageCode.ERROR;
     private List<PinkCatError> errors = new ArrayList<>();
 

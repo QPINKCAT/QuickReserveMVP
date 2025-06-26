@@ -21,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   public UserPrincipal loadUserByUsername(String username) throws UsernameNotFoundException {
     UserEntity user =
         userRepository
-            .findByUserId(username)
+            .findById(username)
             .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다: " + username));
     return new UserPrincipal(user);
   }

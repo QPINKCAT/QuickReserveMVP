@@ -18,7 +18,7 @@ public class UserPrincipal implements UserDetails {
   }
 
   public Long getUserPk() {
-    return user.getUserPk();
+    return user.getPk();
   }
 
   @Override

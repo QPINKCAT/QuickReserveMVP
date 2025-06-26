@@ -28,7 +28,7 @@ public class AuthServiceImpl implements AuthService {
 
   @Override
   public void signup(SignupRequestDto dto) {
-    if (userRepository.findByUserId(dto.getId()).isPresent()) {
+    if (userRepository.findById(dto.getId()).isPresent()) {
       log.warn("회원가입 실패: 중복된 ID (userId={})", dto.getId());
       throw new PinkCatException("이미 사용중인 ID 입니다", ErrorMessageCode.DUPLICATED_USER_ID);
     }
@@ -50,7 +50,7 @@ public class AuthServiceImpl implements AuthService {
   public LoginResponseDto login(LoginRequestDto dto) {
     UserEntity user =
         userRepository
-            .findByUserId(dto.getUserId())
+            .findById(dto.getUserId())
             .filter(u -> passwordEncoder.matches(dto.getPassword(), u.getPassword()))
             .orElseThrow(
                 () -> {
@@ -59,8 +59,8 @@ public class AuthServiceImpl implements AuthService {
                       HttpStatus.UNAUTHORIZED, "사용자 ID 또는 비밀번호가 올바르지 않습니다.");
                 });
 
-    String accessToken = jwtTokenProvider.createAccessToken(user.getUserPk());
-    String refreshToken = jwtTokenProvider.createRefreshToken(user.getUserPk());
+    String accessToken = jwtTokenProvider.createAccessToken(user.getPk());
+    String refreshToken = jwtTokenProvider.createRefreshToken(user.getPk());
 
     refreshTokenStore.save(user.getId(), refreshToken);
     log.info("로그인 성공: userId={}", user.getId());

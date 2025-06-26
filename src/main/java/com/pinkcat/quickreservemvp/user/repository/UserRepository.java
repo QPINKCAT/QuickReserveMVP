@@ -6,5 +6,5 @@ import com.pinkcat.quickreservemvp.user.entity.UserEntity;
 import java.util.Optional;
 
 public interface UserRepository extends ActiveRepository<UserEntity, Long> {
-    Optional<UserEntity> findByUserId(String userId);
+  Optional<UserEntity> findById(String userId);
 }

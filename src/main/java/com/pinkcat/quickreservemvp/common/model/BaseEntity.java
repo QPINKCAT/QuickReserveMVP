@@ -23,44 +23,52 @@ import java.util.Objects;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class BaseEntity implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long pk;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long pk;
 
-    @Column(name = "createdAt", nullable = false, updatable = false)
-    @CreatedDate
-    private LocalDateTime createdAt;
+  @Column(name = "createdAt", nullable = false, updatable = false)
+  @CreatedDate
+  private LocalDateTime createdAt;
 
-    @Column(name = "updatedAt")
-    @LastModifiedDate
-    private LocalDateTime updatedAt;
+  @Column(name = "updatedAt")
+  @LastModifiedDate
+  private LocalDateTime updatedAt;
 
-    @Column(columnDefinition = "boolean default true")
-    private Boolean active = true;
+  @Column(columnDefinition = "boolean default true")
+  private Boolean active = true;
 
-    @Override
-    public final boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null) return false;
-        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
-        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
-        if (thisEffectiveClass != oEffectiveClass) return false;
-        BaseEntity that = (BaseEntity) o;
-        return getPk() != null && Objects.equals(getPk(), that.getPk());
-    }
+  @Override
+  public final boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null) return false;
+    Class<?> oEffectiveClass =
+        o instanceof HibernateProxy
+            ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass()
+            : o.getClass();
+    Class<?> thisEffectiveClass =
+        this instanceof HibernateProxy
+            ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass()
+            : this.getClass();
+    if (thisEffectiveClass != oEffectiveClass) return false;
+    BaseEntity that = (BaseEntity) o;
+    return getPk() != null && Objects.equals(getPk(), that.getPk());
+  }
 
-    @Override
-    public final int hashCode() {
-        return this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode() : getClass().hashCode();
-    }
+  @Override
+  public final int hashCode() {
+    return this instanceof HibernateProxy
+        ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass().hashCode()
+        : getClass().hashCode();
+  }
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-    }
+  @PrePersist
+  protected void onCreate() {
+    createdAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+  }
 
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-    }
+  @PreUpdate
+  protected void onUpdate() {
+    updatedAt = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
+  }
 }

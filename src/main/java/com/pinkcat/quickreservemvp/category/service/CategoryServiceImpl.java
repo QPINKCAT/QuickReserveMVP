@@ -2,7 +2,9 @@ package com.pinkcat.quickreservemvp.category.service;
 
 import com.pinkcat.quickreservemvp.category.dto.CategoryListResponseDTO;
 import com.pinkcat.quickreservemvp.category.dto.CategoryListResponseDTO.Category;
+import com.pinkcat.quickreservemvp.category.dto.CategoryProductListResponseDTO;
 import com.pinkcat.quickreservemvp.category.entity.CategoryEntity;
+import com.pinkcat.quickreservemvp.category.repository.CategoryProductRepository;
 import com.pinkcat.quickreservemvp.category.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,7 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService{
 
     private final CategoryRepository categoryRepository;
+    private final CategoryProductRepository categoryProductRepository;
 
     @Override
     public CategoryListResponseDTO getCategories() {
@@ -36,5 +39,14 @@ public class CategoryServiceImpl implements CategoryService{
                 .categories(categories)
                 .build();
 
+    }
+
+    @Override
+    public CategoryProductListResponseDTO getCategoryProducts(long categoryId, int page, int size) {
+
+
+        List<CategoryProductListResponseDTO> products = new ArrayList<>();
+        return CategoryProductListResponseDTO.builder()
+                .build();
     }
 }

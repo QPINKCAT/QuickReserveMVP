@@ -5,4 +5,5 @@ import com.pinkcat.quickreservemvp.common.repository.ActiveRepository;
 
 public interface CategoryProductRepository extends ActiveRepository<CategoryProductEntity, Long> {
 
+
 }

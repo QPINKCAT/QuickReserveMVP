@@ -4,14 +4,7 @@ import com.pinkcat.quickreservemvp.common.enums.OrderStatusEnum;
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
 import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
 import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,12 +17,8 @@ import org.hibernate.annotations.Comment;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@AttributeOverride(name = "pk", column = @Column(name = "product_order_item_pk"))
 public class OrderItemEntity extends BaseEntity {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "product_order_item_pk")
-//    private Long orderItemPk;
-
     @Comment("할인전 가격")
     @Column(name = "product_order_item_original_price")
     private Integer originalPrice;

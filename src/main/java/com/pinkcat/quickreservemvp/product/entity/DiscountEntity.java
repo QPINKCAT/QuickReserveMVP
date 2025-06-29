@@ -1,12 +1,7 @@
 package com.pinkcat.quickreservemvp.product.entity;
 
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,12 +14,8 @@ import org.hibernate.annotations.Comment;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@AttributeOverride(name = "pk", column = @Column(name = "discount_pk"))
 public class DiscountEntity extends BaseEntity {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "discount_pk")
-//    private Long discountPk;
-
     @Comment("할인이 적용된 가격")
     @Column(name = "discount_price")
     private Integer discountPrice;

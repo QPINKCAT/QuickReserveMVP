@@ -1,12 +1,7 @@
-package com.pinkcat.quickreservemvp.product.entity;
+package com.pinkcat.quickreservemvp.category.entity;
 
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.FetchType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,12 +14,8 @@ import org.hibernate.annotations.Comment;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@AttributeOverride(name = "pk", column = @Column(name = "category_pk"))
 public class CategoryEntity extends BaseEntity {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "category_pk")
-//    private Long categoryPk;
-
     @Comment("카테고리명")
     @Column(name = "category_name")
     private String name;
@@ -35,6 +26,6 @@ public class CategoryEntity extends BaseEntity {
 
     @Comment("상위 카테고리")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pk", nullable = false, updatable = false)
+    @JoinColumn(name = "category_pk", nullable = false, updatable = false)
     private CategoryEntity topCategory;
 }

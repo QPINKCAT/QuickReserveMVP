@@ -2,12 +2,10 @@ package com.pinkcat.quickreservemvp.product.entity;
 
 import com.pinkcat.quickreservemvp.common.enums.ProductStatusEnum;
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
-import jakarta.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,12 +18,8 @@ import org.hibernate.annotations.Comment;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@AttributeOverride(name = "pk", column = @Column(name = "product_pk"))
 public class ProductEntity extends BaseEntity {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "product_pk")
-//    private Long productPk;
-
     @Comment("상품명")
     @Column(name = "product_name", length = 30, unique = true, nullable = false)
     private String productName;

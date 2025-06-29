@@ -2,11 +2,7 @@ package com.pinkcat.quickreservemvp.customer.entity;
 
 import com.pinkcat.quickreservemvp.common.enums.GenderEnum;
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,12 +17,8 @@ import org.hibernate.annotations.Comment;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@AttributeOverride(name = "pk", column = @Column(name = "customer_pk"))
 public class CustomerEntity extends BaseEntity {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "customer_pk")
-//    private Long customerPk;
-
     @Comment("고객 아이디")
     @Column(name = "customer_id", length = 320, unique = true, nullable = false)
     private String id;

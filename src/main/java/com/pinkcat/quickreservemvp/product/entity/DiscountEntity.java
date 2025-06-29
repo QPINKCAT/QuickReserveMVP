@@ -1,7 +1,12 @@
 package com.pinkcat.quickreservemvp.product.entity;
 
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.FetchType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

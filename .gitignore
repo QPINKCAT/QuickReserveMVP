@@ -250,4 +250,13 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# QueryDsl
+src/main/generated
+
 # End of https://www.toptal.com/developers/gitignore/api/basic,java,intellij,macos,windows,netbeans,visualstudiocode
+/.idea/compiler.xml
+/.idea/.gitignore
+/.idea/dataSources.xml
+/.idea/google-java-format.xml
+/.idea/misc.xml
+/.idea/vcs.xml

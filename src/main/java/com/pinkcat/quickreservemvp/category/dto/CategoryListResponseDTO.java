@@ -1,5 +1,6 @@
 package com.pinkcat.quickreservemvp.category.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class CategoryListResponseDTO {
 
+    @NotNull
     @Builder.Default
     private List<Category> categories = new ArrayList<>();
 
@@ -22,9 +24,15 @@ public class CategoryListResponseDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Category{
+        @NotNull
         private Long categoryId;
+
+        @NotNull
         private String name;
+
+        @NotNull
         private Integer order;
+
         private Long topCategoryId;
     }
 }

@@ -17,7 +17,7 @@ import org.hibernate.annotations.Comment;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@AttributeOverride(name = "pk", column = @Column(name = "user_pk"))
+@AttributeOverride(name = "pk", column = @Column(name = "customer_pk"))
 public class CustomerEntity extends BaseEntity {
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)

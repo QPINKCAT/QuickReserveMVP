@@ -24,11 +24,11 @@ public class CustomerEntity extends BaseEntity {
     private String id;
 
     @Comment("고객명")
-    @Column(name = "customer_name", length = 20, unique = true, nullable = false)
+    @Column(name = "customer_name", length = 20, nullable = false)
     private String name;
 
     @Comment("고객 비밀번호")
-    @Column(name = "customer_password", length = 20, unique = true, nullable = false)
+    @Column(name = "customer_password", length = 255, nullable = false)
     private String password;
 
     @Comment("고객 핸드폰번호")
@@ -38,7 +38,9 @@ public class CustomerEntity extends BaseEntity {
 
     @Comment("고객 이메일")
     @Column(name = "customer_email", nullable = false)
-    @Pattern(regexp = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$", message = "올바른 이메일 주소 형식이 아닙니다.")
+    @Pattern(
+            regexp = "^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$",
+            message = "올바른 이메일 주소 형식이 아닙니다.")
     private String email;
 
     @Enumerated(EnumType.STRING)

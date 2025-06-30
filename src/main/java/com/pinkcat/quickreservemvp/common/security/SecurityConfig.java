@@ -6,6 +6,7 @@ import com.pinkcat.quickreservemvp.common.security.principal.UserDetailsServiceI
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,7 +33,15 @@ public class SecurityConfig {
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(
-            auth -> auth.requestMatchers("/api/auth/**").permitAll().anyRequest().authenticated())
+            auth ->
+                auth.requestMatchers("/api/auth/login", "/api/auth/signup")
+                    .permitAll()
+                    .requestMatchers("/api/products/**")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/reviews")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
         .addFilterBefore(
             new JwtAuthenticationFilter(jwtTokenProvider, userDetailsService),
             UsernamePasswordAuthenticationFilter.class);

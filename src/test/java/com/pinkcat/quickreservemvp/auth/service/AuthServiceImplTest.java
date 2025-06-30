@@ -146,4 +146,20 @@ class AuthServiceImplTest {
       assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusCode());
     }
   }
+
+  @Nested
+  class LogoutTest {
+
+    @Test
+    void 성공() {
+      // given
+      String userId = "testuser";
+
+      // when
+      assertDoesNotThrow(() -> authService.logout(userId));
+
+      // then
+      verify(refreshTokenStore).delete(userId);
+    }
+  }
 }

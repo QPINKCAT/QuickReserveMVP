@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     CustomerEntity user =
-            CustomerEntity.builder()
+        CustomerEntity.builder()
             .id(dto.getId())
             .name(dto.getName())
             .password(passwordEncoder.encode(dto.getPassword()))
@@ -65,5 +65,11 @@ public class AuthServiceImpl implements AuthService {
     refreshTokenStore.save(user.getId(), refreshToken);
     log.info("로그인 성공: userId={}", user.getId());
     return LoginResponseDto.builder().accessToken(accessToken).refreshToken(refreshToken).build();
+  }
+
+  @Override
+  public void logout(String userId) {
+    refreshTokenStore.delete(userId);
+    log.info("로그아웃 성공: userId={}", userId);
   }
 }

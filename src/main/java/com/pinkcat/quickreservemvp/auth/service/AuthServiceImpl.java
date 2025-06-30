@@ -7,8 +7,8 @@ import com.pinkcat.quickreservemvp.common.exceptions.ErrorMessageCode;
 import com.pinkcat.quickreservemvp.common.exceptions.PinkCatException;
 import com.pinkcat.quickreservemvp.common.redis.RefreshTokenStore;
 import com.pinkcat.quickreservemvp.common.security.jwt.JwtTokenProvider;
-import com.pinkcat.quickreservemvp.user.entity.UserEntity;
-import com.pinkcat.quickreservemvp.user.repository.UserRepository;
+import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
+import com.pinkcat.quickreservemvp.customer.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,20 +21,20 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-  private final UserRepository userRepository;
+  private final CustomerRepository customerRepository;
   private final PasswordEncoder passwordEncoder;
   private final JwtTokenProvider jwtTokenProvider;
   private final RefreshTokenStore refreshTokenStore;
 
   @Override
   public void signup(SignupRequestDto dto) {
-    if (userRepository.findById(dto.getId()).isPresent()) {
+    if (customerRepository.findById(dto.getId()).isPresent()) {
       log.warn("회원가입 실패: 중복된 ID (userId={})", dto.getId());
       throw new PinkCatException("이미 사용중인 ID 입니다", ErrorMessageCode.DUPLICATED_USER_ID);
     }
 
-    UserEntity user =
-        UserEntity.builder()
+    CustomerEntity user =
+            CustomerEntity.builder()
             .id(dto.getId())
             .name(dto.getName())
             .password(passwordEncoder.encode(dto.getPassword()))
@@ -42,16 +42,16 @@ public class AuthServiceImpl implements AuthService {
             .email(dto.getEmail())
             .gender(dto.getGender())
             .build();
-    userRepository.save(user);
-    log.info("회원가입 성공: userId={}", user.getId());
+    customerRepository.save(user);
+    log.info("회원가입 성공: customerId={}", user.getId());
   }
 
   @Override
   public LoginResponseDto login(LoginRequestDto dto) {
-    UserEntity user =
-        userRepository
+    CustomerEntity user =
+        customerRepository
             .findById(dto.getUserId())
-            .filter(u -> passwordEncoder.matches(dto.getPassword(), u.getPassword()))
+            .filter(c -> passwordEncoder.matches(dto.getPassword(), c.getPassword()))
             .orElseThrow(
                 () -> {
                   log.warn("로그인 실패: ID 또는 비밀번호 불일치 (userId={})", dto.getUserId());

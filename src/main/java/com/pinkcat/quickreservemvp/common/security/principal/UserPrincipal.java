@@ -1,6 +1,6 @@
 package com.pinkcat.quickreservemvp.common.security.principal;
 
-import com.pinkcat.quickreservemvp.user.entity.UserEntity;
+import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,9 +11,9 @@ import java.util.Collections;
 @Getter
 public class UserPrincipal implements UserDetails {
 
-  private final UserEntity user;
+  private final CustomerEntity user;
 
-  public UserPrincipal(UserEntity user) {
+  public UserPrincipal(CustomerEntity user) {
     this.user = user;
   }
 

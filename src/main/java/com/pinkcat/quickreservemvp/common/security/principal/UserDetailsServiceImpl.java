@@ -1,7 +1,7 @@
 package com.pinkcat.quickreservemvp.common.security.principal;
 
-import com.pinkcat.quickreservemvp.user.entity.UserEntity;
-import com.pinkcat.quickreservemvp.user.repository.UserRepository;
+import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
+import com.pinkcat.quickreservemvp.customer.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,20 +15,20 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-  private final UserRepository userRepository;
+  private final CustomerRepository customerRepository;
 
   @Override
   public UserPrincipal loadUserByUsername(String username) throws UsernameNotFoundException {
-    UserEntity user =
-        userRepository
+    CustomerEntity user =
+        customerRepository
             .findById(username)
             .orElseThrow(() -> new UsernameNotFoundException("유저를 찾을 수 없습니다: " + username));
     return new UserPrincipal(user);
   }
 
   public UserPrincipal loadUserByPk(Long userPk) {
-    UserEntity user =
-        userRepository
+    CustomerEntity user =
+        customerRepository
             .findById(userPk)
             .orElseThrow(
                 () -> {

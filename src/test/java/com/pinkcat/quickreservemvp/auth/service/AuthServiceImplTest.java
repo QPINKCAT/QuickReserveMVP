@@ -7,8 +7,8 @@ import com.pinkcat.quickreservemvp.common.exceptions.ErrorMessageCode;
 import com.pinkcat.quickreservemvp.common.exceptions.PinkCatException;
 import com.pinkcat.quickreservemvp.common.redis.RefreshTokenStore;
 import com.pinkcat.quickreservemvp.common.security.jwt.JwtTokenProvider;
-import com.pinkcat.quickreservemvp.user.entity.UserEntity;
-import com.pinkcat.quickreservemvp.user.repository.UserRepository;
+import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
+import com.pinkcat.quickreservemvp.customer.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 
 class AuthServiceImplTest {
 
-  @Mock private UserRepository userRepository;
+  @Mock private CustomerRepository customerRepository;
   @Mock private PasswordEncoder passwordEncoder;
   @Mock private JwtTokenProvider jwtTokenProvider;
   @Mock private RefreshTokenStore refreshTokenStore;
@@ -32,7 +32,7 @@ class AuthServiceImplTest {
   @InjectMocks private AuthServiceImpl authService;
 
   private SignupRequestDto signupDto;
-  private UserEntity userEntity;
+  private CustomerEntity customerEntity;
 
   @BeforeEach
   void setup() {
@@ -47,15 +47,15 @@ class AuthServiceImplTest {
             .phoneNumber("010-1234-5678")
             .build();
 
-    userEntity =
-        UserEntity.builder()
+    customerEntity =
+        CustomerEntity.builder()
             .id("testuser")
             .name("테스트유저")
             .password("encoded_pass")
             .email("test@example.com")
             .phoneNumber("010-1234-5678")
             .build();
-    userEntity.setPk(1L);
+    customerEntity.setPk(1L);
   }
 
   @Nested
@@ -64,19 +64,19 @@ class AuthServiceImplTest {
     @Test
     void 성공() {
       // given
-      when(userRepository.findById("testuser")).thenReturn(Optional.empty());
+      when(customerRepository.findById("testuser")).thenReturn(Optional.empty());
       when(passwordEncoder.encode("rawpass")).thenReturn("encoded_pass");
-      when(userRepository.save(any(UserEntity.class)))
+      when(customerRepository.save(any(CustomerEntity.class)))
           .thenAnswer(invocation -> invocation.getArgument(0));
 
       // when
       authService.signup(signupDto);
 
       // then
-      ArgumentCaptor<UserEntity> captor = ArgumentCaptor.forClass(UserEntity.class);
-      verify(userRepository).save(captor.capture());
+      ArgumentCaptor<CustomerEntity> captor = ArgumentCaptor.forClass(CustomerEntity.class);
+      verify(customerRepository).save(captor.capture());
 
-      UserEntity saved = captor.getValue();
+      CustomerEntity saved = captor.getValue();
       assertEquals("testuser", saved.getId());
       assertEquals("테스트유저", saved.getName());
       assertEquals("encoded_pass", saved.getPassword());
@@ -85,7 +85,7 @@ class AuthServiceImplTest {
     @Test
     void 실패_중복ID() {
       // given
-      when(userRepository.findById("testuser")).thenReturn(Optional.of(userEntity));
+      when(customerRepository.findById("testuser")).thenReturn(Optional.of(customerEntity));
 
       // when
       PinkCatException ex =
@@ -103,7 +103,7 @@ class AuthServiceImplTest {
     void 성공() {
       // given
       LoginRequestDto loginDto = new LoginRequestDto("testuser", "rawpass");
-      when(userRepository.findById("testuser")).thenReturn(Optional.of(userEntity));
+      when(customerRepository.findById("testuser")).thenReturn(Optional.of(customerEntity));
       when(passwordEncoder.matches("rawpass", "encoded_pass")).thenReturn(true);
       when(jwtTokenProvider.createAccessToken(1L)).thenReturn("access-token");
       when(jwtTokenProvider.createRefreshToken(1L)).thenReturn("refresh-token");
@@ -121,7 +121,7 @@ class AuthServiceImplTest {
     void 실패_존재하지않는ID() {
       // given
       LoginRequestDto loginDto = new LoginRequestDto("wronguser", "rawpass");
-      when(userRepository.findById("wronguser")).thenReturn(Optional.empty());
+      when(customerRepository.findById("wronguser")).thenReturn(Optional.empty());
 
       // when
       ResponseStatusException ex =
@@ -135,7 +135,7 @@ class AuthServiceImplTest {
     void 실패_비밀번호불일치() {
       // given
       LoginRequestDto loginDto = new LoginRequestDto("testuser", "wrongpass");
-      when(userRepository.findById("testuser")).thenReturn(Optional.of(userEntity));
+      when(customerRepository.findById("testuser")).thenReturn(Optional.of(customerEntity));
       when(passwordEncoder.matches("wrongpass", "encoded_pass")).thenReturn(false);
 
       // when

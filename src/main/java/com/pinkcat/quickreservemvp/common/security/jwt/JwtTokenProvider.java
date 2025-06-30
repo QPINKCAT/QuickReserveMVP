@@ -1,6 +1,6 @@
 package com.pinkcat.quickreservemvp.common.security.jwt;
 
-import com.pinkcat.quickreservemvp.user.repository.UserRepository;
+import com.pinkcat.quickreservemvp.customer.repository.CustomerRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
@@ -16,7 +16,7 @@ import java.util.Date;
 @Component
 @Slf4j
 public class JwtTokenProvider {
-  private final UserRepository userRepository;
+  private final CustomerRepository userRepository;
 
   @Value("${jwt.secret}")
   private String secret;
@@ -29,7 +29,7 @@ public class JwtTokenProvider {
 
   private Key key;
 
-  public JwtTokenProvider(UserRepository userRepository) {
+  public JwtTokenProvider(CustomerRepository userRepository) {
     this.userRepository = userRepository;
   }
 

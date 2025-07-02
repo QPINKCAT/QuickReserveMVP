@@ -7,7 +7,7 @@ import jakarta.validation.ConstraintValidatorContext;
 import java.util.regex.Pattern;
 
 public class EmailValidator implements ConstraintValidator<EmailValid, String> {
-  private static final Pattern PATTERN = Pattern.compile(ValidationPatterns.PHONE_NUMBER);
+  private static final Pattern PATTERN = Pattern.compile(ValidationPatterns.EMAIL);
 
   @Override
   public boolean isValid(String value, ConstraintValidatorContext context) {

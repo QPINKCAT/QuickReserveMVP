@@ -1,7 +1,9 @@
 package com.pinkcat.quickreservemvp.customer.service;
 
 import com.pinkcat.quickreservemvp.customer.dto.CustomerGetResponseDto;
+import com.pinkcat.quickreservemvp.customer.dto.CustomerUpdateRequestDto;
 
 public interface CustomerService {
   CustomerGetResponseDto getMyInfo(Long customerPk);
+  void updateMyInfo(Long customerPk, CustomerUpdateRequestDto dto);
 }

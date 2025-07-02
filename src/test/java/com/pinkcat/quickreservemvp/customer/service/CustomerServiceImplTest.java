@@ -4,6 +4,7 @@ import com.pinkcat.quickreservemvp.common.enums.GenderEnum;
 import com.pinkcat.quickreservemvp.common.exceptions.ErrorMessageCode;
 import com.pinkcat.quickreservemvp.common.exceptions.PinkCatException;
 import com.pinkcat.quickreservemvp.customer.dto.CustomerGetResponseDto;
+import com.pinkcat.quickreservemvp.customer.dto.CustomerUpdateRequestDto;
 import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
 import com.pinkcat.quickreservemvp.customer.repository.CustomerRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -83,6 +84,79 @@ class CustomerServiceImplTest {
       // when
       PinkCatException ex =
           assertThrows(PinkCatException.class, () -> customerService.getMyInfo(2L));
+
+      // then
+      assertEquals(ErrorMessageCode.CUSTOMER_INACTIVE, ex.getPinkCatErrorMessageCode());
+    }
+  }
+
+  @Nested
+  class UpdateMyInfoTest {
+
+    @Test
+    void 성공_모든필드수정() {
+      // given
+      Long customerPk = activeCustomer.getPk();
+
+      CustomerUpdateRequestDto dto =
+          CustomerUpdateRequestDto.builder()
+              .name("수정테스트유저")
+              .phoneNumber("010-9876-5432")
+              .email("updatetestuser@example.com")
+              .gender(GenderEnum.FEMALE)
+              .build();
+
+      when(customerRepository.findByPkAndActiveTrue(customerPk))
+          .thenReturn(Optional.of(activeCustomer));
+
+      // when
+      customerService.updateMyInfo(customerPk, dto);
+
+      // then
+      verify(customerRepository).save(activeCustomer);
+      assertEquals("수정테스트유저", activeCustomer.getName());
+      assertEquals("010-9876-5432", activeCustomer.getPhoneNumber());
+      assertEquals("updatetestuser@example.com", activeCustomer.getEmail());
+      assertEquals(GenderEnum.FEMALE, activeCustomer.getGender());
+    }
+
+    @Test
+    void 성공_일부필드만수정() {
+      // given
+      Long customerPk = activeCustomer.getPk();
+
+      CustomerUpdateRequestDto dto =
+          CustomerUpdateRequestDto.builder()
+              .name("일부업데이트테스트유저")
+              .email("partupdatetestuser@example.com")
+              .build();
+
+      when(customerRepository.findByPkAndActiveTrue(customerPk))
+          .thenReturn(Optional.of(activeCustomer));
+
+      // when
+      customerService.updateMyInfo(customerPk, dto);
+
+      // then
+      verify(customerRepository).save(activeCustomer);
+      assertEquals("일부업데이트테스트유저", activeCustomer.getName()); // 변경
+      assertEquals("010-1234-5678", activeCustomer.getPhoneNumber());
+      assertEquals("partupdatetestuser@example.com", activeCustomer.getEmail()); // 변경
+      assertEquals(GenderEnum.MALE, activeCustomer.getGender());
+    }
+
+    @Test
+    void 실패_비활성화된계정() {
+      // given
+      Long customerPk = inactiveCustomer.getPk();
+
+      CustomerUpdateRequestDto dto = CustomerUpdateRequestDto.builder().name("홍길동").build();
+
+      when(customerRepository.findByPkAndActiveTrue(customerPk)).thenReturn(Optional.empty());
+
+      // when
+      PinkCatException ex =
+          assertThrows(PinkCatException.class, () -> customerService.updateMyInfo(customerPk, dto));
 
       // then
       assertEquals(ErrorMessageCode.CUSTOMER_INACTIVE, ex.getPinkCatErrorMessageCode());

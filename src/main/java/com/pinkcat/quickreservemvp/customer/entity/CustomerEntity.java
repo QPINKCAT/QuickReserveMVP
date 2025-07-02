@@ -3,6 +3,7 @@ package com.pinkcat.quickreservemvp.customer.entity;
 import com.pinkcat.quickreservemvp.common.enums.GenderEnum;
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
 import com.pinkcat.quickreservemvp.common.validation.ValidationPatterns;
+import com.pinkcat.quickreservemvp.customer.dto.CustomerUpdateRequestDto;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -50,4 +51,19 @@ public class CustomerEntity extends BaseEntity {
   @Comment("고객 성별")
   @Column(name = "customer_gender")
   private GenderEnum gender;
+
+  public void updateInfo(CustomerUpdateRequestDto dto) {
+    if (dto.getName() != null && !dto.getName().isBlank()) {
+      this.name = dto.getName();
+    }
+    if (dto.getPhoneNumber() != null && !dto.getPhoneNumber().isBlank()) {
+      this.phoneNumber = dto.getPhoneNumber();
+    }
+    if (dto.getEmail() != null && !dto.getEmail().isBlank()) {
+      this.email = dto.getEmail();
+    }
+    if (dto.getGender() != null) {
+      this.gender = dto.getGender();
+    }
+  }
 }

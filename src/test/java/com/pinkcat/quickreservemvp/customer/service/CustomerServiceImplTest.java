@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -157,6 +158,53 @@ class CustomerServiceImplTest {
       // when
       PinkCatException ex =
           assertThrows(PinkCatException.class, () -> customerService.updateMyInfo(customerPk, dto));
+
+      // then
+      assertEquals(ErrorMessageCode.CUSTOMER_INACTIVE, ex.getPinkCatErrorMessageCode());
+    }
+  }
+
+  @Nested
+  class DeleteTest {
+
+    @Test
+    void 성공() {
+      // given
+      Long customerPk = activeCustomer.getPk();
+
+      when(customerRepository.findByPkAndActiveTrue(customerPk))
+          .thenReturn(Optional.of(activeCustomer));
+
+      LocalDateTime previousUpdatedAt = activeCustomer.getUpdatedAt();
+      doAnswer(
+              invocation -> {
+                CustomerEntity customer = invocation.getArgument(0);
+                customer.setUpdatedAt(LocalDateTime.now());
+                return customer;
+              })
+          .when(customerRepository)
+          .save(any(CustomerEntity.class));
+
+      // when
+      customerService.delete(customerPk);
+
+      // then
+      assertFalse(activeCustomer.getActive());
+      assertNotNull(activeCustomer.getUpdatedAt());
+      assertNotEquals(previousUpdatedAt, activeCustomer.getUpdatedAt());
+
+      verify(customerRepository).save(activeCustomer);
+    }
+
+    @Test
+    void 실패_비활성화계정() {
+      // given
+      Long customerPk = inactiveCustomer.getPk();
+      when(customerRepository.findByPkAndActiveTrue(customerPk)).thenReturn(Optional.empty());
+
+      // when
+      PinkCatException ex =
+          assertThrows(PinkCatException.class, () -> customerService.delete(customerPk));
 
       // then
       assertEquals(ErrorMessageCode.CUSTOMER_INACTIVE, ex.getPinkCatErrorMessageCode());

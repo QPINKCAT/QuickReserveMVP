@@ -5,5 +5,8 @@ import com.pinkcat.quickreservemvp.customer.dto.CustomerUpdateRequestDto;
 
 public interface CustomerService {
   CustomerGetResponseDto getMyInfo(Long customerPk);
+
   void updateMyInfo(Long customerPk, CustomerUpdateRequestDto dto);
+
+  void delete(Long userPk);
 }

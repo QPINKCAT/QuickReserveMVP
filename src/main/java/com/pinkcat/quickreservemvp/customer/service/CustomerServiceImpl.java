@@ -9,6 +9,7 @@ import com.pinkcat.quickreservemvp.customer.repository.CustomerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -54,5 +55,24 @@ public class CustomerServiceImpl implements CustomerService {
     customerRepository.save(customer);
 
     log.info("[내 정보 수정 성공] customerPk={}", customerPk);
+  }
+
+  @Override
+  @Transactional
+  public void delete(Long customerPk) {
+    CustomerEntity customer =
+        customerRepository
+            .findByPkAndActiveTrue(customerPk)
+            .orElseThrow(
+                () -> {
+                  log.warn("[회원 삭제 실패] 비활성화 계정/계정 없음: customerPk={}", customerPk);
+                  throw new PinkCatException(
+                      "이미 탈퇴 처리된 계정입니다.", ErrorMessageCode.CUSTOMER_INACTIVE);
+                });
+
+    customer.setActive(false);
+    customerRepository.save(customer);
+
+    log.info("[회원 삭제 성공] customerPk={}", customerPk);
   }
 }

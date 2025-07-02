@@ -29,4 +29,10 @@ public class CustomerController {
     customerService.updateMyInfo(user.getUserPk(), dto);
     return ResponseEntity.ok().build();
   }
+
+  @DeleteMapping
+  public ResponseEntity<Void> delete(@AuthenticationPrincipal UserPrincipal user) {
+    customerService.delete(user.getUserPk());
+    return ResponseEntity.ok().build();
+  }
 }

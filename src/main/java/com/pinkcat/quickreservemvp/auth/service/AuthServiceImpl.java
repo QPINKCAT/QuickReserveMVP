@@ -21,14 +21,14 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-  private final CustomerRepository customerRepository;
+  private final CustomerRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final JwtTokenProvider jwtTokenProvider;
   private final RefreshTokenStore refreshTokenStore;
 
   @Override
   public void signup(SignupRequestDto dto) {
-    if (customerRepository.findById(dto.getId()).isPresent()) {
+    if (userRepository.findById(dto.getId()).isPresent()) {
       log.warn("[회원가입 실패] 중복된 ID: userId={}", dto.getId());
       throw new PinkCatException("이미 사용중인 ID 입니다", ErrorMessageCode.DUPLICATED_USER_ID);
     }
@@ -42,14 +42,14 @@ public class AuthServiceImpl implements AuthService {
             .email(dto.getEmail())
             .gender(dto.getGender())
             .build();
-    customerRepository.save(user);
+    userRepository.save(user);
     log.info("[회원가입 성공] customerId={}", user.getId());
   }
 
   @Override
   public LoginResponseDto login(LoginRequestDto dto) {
     CustomerEntity user =
-        customerRepository
+        userRepository
             .findById(dto.getUserId())
             .filter(CustomerEntity::getActive)
             .filter(c -> passwordEncoder.matches(dto.getPassword(), c.getPassword()))

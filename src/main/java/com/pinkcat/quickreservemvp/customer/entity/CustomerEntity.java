@@ -66,4 +66,8 @@ public class CustomerEntity extends BaseEntity {
       this.gender = dto.getGender();
     }
   }
+
+  public void updateEncordedPassword(String newEncordedPassword) {
+    this.password = newEncordedPassword;
+  }
 }

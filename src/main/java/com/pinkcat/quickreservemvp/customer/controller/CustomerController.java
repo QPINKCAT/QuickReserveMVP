@@ -2,6 +2,7 @@ package com.pinkcat.quickreservemvp.customer.controller;
 
 import com.pinkcat.quickreservemvp.common.security.principal.UserPrincipal;
 import com.pinkcat.quickreservemvp.customer.dto.CustomerGetResponseDto;
+import com.pinkcat.quickreservemvp.customer.dto.CustomerUpdatePasswordRequestDto;
 import com.pinkcat.quickreservemvp.customer.dto.CustomerUpdateRequestDto;
 import com.pinkcat.quickreservemvp.customer.service.CustomerService;
 import jakarta.validation.Valid;
@@ -27,6 +28,14 @@ public class CustomerController {
       @AuthenticationPrincipal UserPrincipal user,
       @RequestBody @Valid CustomerUpdateRequestDto dto) {
     customerService.updateMyInfo(user.getUserPk(), dto);
+    return ResponseEntity.ok().build();
+  }
+
+  @PatchMapping("/password")
+  public ResponseEntity<Void> updateMyPassword(
+      @AuthenticationPrincipal UserPrincipal user,
+      @RequestBody @Valid CustomerUpdatePasswordRequestDto dto) {
+    customerService.updatePassword(user.getUserPk(), dto);
     return ResponseEntity.ok().build();
   }
 

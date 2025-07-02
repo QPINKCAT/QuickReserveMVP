@@ -9,7 +9,9 @@ public enum ErrorMessageCode {
   LOGIN_FAILED(40102, "아이디 또는 비밀번호가 일치하지 않습니다."),
 
   // Customer: 40200~40299
-  CUSTOMER_INACTIVE(40201, "비활성화된 계정입니다.");
+  CUSTOMER_INACTIVE(40201, "비활성화된 계정입니다."),
+  // ErrorMessageCode.java
+  INVALID_PASSWORD(40202, "현재 비밀번호가 일치하지 않습니다.");
 
   private final int codeValue;
   private final String message;

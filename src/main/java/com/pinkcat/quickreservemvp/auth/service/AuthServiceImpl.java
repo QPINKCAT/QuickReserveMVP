@@ -51,10 +51,11 @@ public class AuthServiceImpl implements AuthService {
     CustomerEntity user =
         customerRepository
             .findById(dto.getUserId())
+            .filter(CustomerEntity::getActive)
             .filter(c -> passwordEncoder.matches(dto.getPassword(), c.getPassword()))
             .orElseThrow(
                 () -> {
-                  log.warn("[로그인 실패] ID 또는 비밀번호 불일치: userId={}", dto.getUserId());
+                  log.warn("[로그인 실패] ID/비밀번호 불일치 or 비활성화 계정: userId={}", dto.getUserId());
                   return new ResponseStatusException(
                       HttpStatus.UNAUTHORIZED, "사용자 ID 또는 비밀번호가 올바르지 않습니다.");
                 });

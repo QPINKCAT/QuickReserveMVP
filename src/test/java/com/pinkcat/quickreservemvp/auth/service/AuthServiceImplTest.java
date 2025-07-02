@@ -145,6 +145,23 @@ class AuthServiceImplTest {
       // then
       assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusCode());
     }
+
+    @Test
+    void 실패_비활성화된계정() {
+      // given
+      LoginRequestDto loginDto = new LoginRequestDto("testuser", "rawpass");
+
+      customerEntity.setActive(false);
+      when(customerRepository.findById("testuser")).thenReturn(Optional.of(customerEntity));
+
+      // when
+      ResponseStatusException ex =
+              assertThrows(ResponseStatusException.class, () -> authService.login(loginDto));
+
+      // then
+      assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusCode());
+    }
+
   }
 
   @Nested

@@ -29,7 +29,7 @@ public class AuthServiceImpl implements AuthService {
   @Override
   public void signup(SignupRequestDto dto) {
     if (customerRepository.findById(dto.getId()).isPresent()) {
-      log.warn("회원가입 실패: 중복된 ID (userId={})", dto.getId());
+      log.warn("[회원가입 실패] 중복된 ID: userId={}", dto.getId());
       throw new PinkCatException("이미 사용중인 ID 입니다", ErrorMessageCode.DUPLICATED_USER_ID);
     }
 
@@ -43,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
             .gender(dto.getGender())
             .build();
     customerRepository.save(user);
-    log.info("회원가입 성공: customerId={}", user.getId());
+    log.info("[회원가입 성공] customerId={}", user.getId());
   }
 
   @Override
@@ -54,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
             .filter(c -> passwordEncoder.matches(dto.getPassword(), c.getPassword()))
             .orElseThrow(
                 () -> {
-                  log.warn("로그인 실패: ID 또는 비밀번호 불일치 (userId={})", dto.getUserId());
+                  log.warn("[로그인 실패] ID 또는 비밀번호 불일치: userId={}", dto.getUserId());
                   return new ResponseStatusException(
                       HttpStatus.UNAUTHORIZED, "사용자 ID 또는 비밀번호가 올바르지 않습니다.");
                 });
@@ -63,13 +63,13 @@ public class AuthServiceImpl implements AuthService {
     String refreshToken = jwtTokenProvider.createRefreshToken(user.getPk());
 
     refreshTokenStore.save(user.getId(), refreshToken);
-    log.info("로그인 성공: userId={}", user.getId());
+    log.info("[로그인 성공] userId={}", user.getId());
     return LoginResponseDto.builder().accessToken(accessToken).refreshToken(refreshToken).build();
   }
 
   @Override
   public void logout(String userId) {
     refreshTokenStore.delete(userId);
-    log.info("로그아웃 성공: userId={}", userId);
+    log.info("[로그아웃 성공] userId={}", userId);
   }
 }

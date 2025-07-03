@@ -1,0 +1,357 @@
+package com.pinkcat.quickreservemvp.customer.service;
+
+import com.pinkcat.quickreservemvp.common.enums.GenderEnum;
+import com.pinkcat.quickreservemvp.common.exceptions.ErrorMessageCode;
+import com.pinkcat.quickreservemvp.common.exceptions.PinkCatException;
+import com.pinkcat.quickreservemvp.customer.dto.CustomerGetResponseDto;
+import com.pinkcat.quickreservemvp.customer.dto.CustomerUpdatePasswordRequestDto;
+import com.pinkcat.quickreservemvp.customer.dto.CustomerUpdateRequestDto;
+import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
+import com.pinkcat.quickreservemvp.customer.repository.CustomerRepository;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+
+class CustomerServiceImplTest {
+  @Mock private CustomerRepository customerRepository;
+
+  @Mock private PasswordEncoder passwordEncoder;
+
+  @InjectMocks private CustomerServiceImpl customerService;
+
+  private CustomerEntity activeCustomer;
+  private CustomerEntity inactiveCustomer;
+
+  @BeforeEach
+  void setup() {
+    MockitoAnnotations.openMocks(this);
+
+    activeCustomer =
+        CustomerEntity.builder()
+            .id("activetestuser")
+            .name("활성화테스트유저")
+            .password("encoded_pass")
+            .phoneNumber("010-1234-5678")
+            .email("activetest@example.com")
+            .gender(GenderEnum.MALE)
+            .build();
+    activeCustomer.setPk(1L);
+
+    inactiveCustomer =
+        CustomerEntity.builder()
+            .id("inactivetestuser")
+            .name("비활성화테스트유저")
+            .password("encoded_pass")
+            .phoneNumber("010-2345-5678")
+            .email("inactivetest@example.com")
+            .gender(GenderEnum.FEMALE)
+            .build();
+    inactiveCustomer.setActive(false);
+    inactiveCustomer.setPk(2L);
+  }
+
+  @Nested
+  class GetMyInfoTest {
+    @Test
+    void 성공() {
+      // given
+      when(customerRepository.findByPkAndActiveTrue(activeCustomer.getPk()))
+          .thenReturn(Optional.of(activeCustomer));
+
+      // when
+      CustomerGetResponseDto result = customerService.getMyInfo(activeCustomer.getPk());
+
+      // then
+      assertNotNull(result);
+      assertEquals("activetestuser", result.getCustomerId());
+      assertEquals("활성화테스트유저", result.getCustomerName());
+      assertEquals("010-1234-5678", result.getCustomerPhoneNumber());
+      assertEquals("activetest@example.com", result.getCustomerEmail());
+      assertEquals(GenderEnum.MALE, result.getCustomerGender());
+    }
+
+    @Test
+    void 실패_비활성화된계정() {
+      // given
+      when(customerRepository.findByPkAndActiveTrue(inactiveCustomer.getPk()))
+          .thenReturn(Optional.empty());
+
+      // when
+      PinkCatException ex =
+          assertThrows(PinkCatException.class, () -> customerService.getMyInfo(2L));
+
+      // then
+      assertEquals(ErrorMessageCode.CUSTOMER_INACTIVE, ex.getPinkCatErrorMessageCode());
+    }
+  }
+
+  @Nested
+  class UpdateMyInfoTest {
+
+    @Test
+    void 성공_모든필드수정() {
+      // given
+      Long customerPk = activeCustomer.getPk();
+
+      CustomerUpdateRequestDto dto =
+          CustomerUpdateRequestDto.builder()
+              .name("수정테스트유저")
+              .phoneNumber("010-9876-5432")
+              .email("updatetestuser@example.com")
+              .gender(GenderEnum.FEMALE)
+              .build();
+
+      when(customerRepository.findByPkAndActiveTrue(customerPk))
+          .thenReturn(Optional.of(activeCustomer));
+
+      // when
+      customerService.updateMyInfo(customerPk, dto);
+
+      // then
+      verify(customerRepository).save(activeCustomer);
+      assertEquals("수정테스트유저", activeCustomer.getName());
+      assertEquals("010-9876-5432", activeCustomer.getPhoneNumber());
+      assertEquals("updatetestuser@example.com", activeCustomer.getEmail());
+      assertEquals(GenderEnum.FEMALE, activeCustomer.getGender());
+    }
+
+    @Test
+    void 성공_일부필드만수정() {
+      // given
+      Long customerPk = activeCustomer.getPk();
+
+      CustomerUpdateRequestDto dto =
+          CustomerUpdateRequestDto.builder()
+              .name("일부업데이트테스트유저")
+              .email("partupdatetestuser@example.com")
+              .build();
+
+      when(customerRepository.findByPkAndActiveTrue(customerPk))
+          .thenReturn(Optional.of(activeCustomer));
+
+      // when
+      customerService.updateMyInfo(customerPk, dto);
+
+      // then
+      verify(customerRepository).save(activeCustomer);
+      assertEquals("일부업데이트테스트유저", activeCustomer.getName()); // 변경
+      assertEquals("010-1234-5678", activeCustomer.getPhoneNumber());
+      assertEquals("partupdatetestuser@example.com", activeCustomer.getEmail()); // 변경
+      assertEquals(GenderEnum.MALE, activeCustomer.getGender());
+    }
+
+    @Test
+    void 실패_비활성화된계정() {
+      // given
+      Long customerPk = inactiveCustomer.getPk();
+
+      CustomerUpdateRequestDto dto = CustomerUpdateRequestDto.builder().name("홍길동").build();
+
+      when(customerRepository.findByPkAndActiveTrue(customerPk)).thenReturn(Optional.empty());
+
+      // when
+      PinkCatException ex =
+          assertThrows(PinkCatException.class, () -> customerService.updateMyInfo(customerPk, dto));
+
+      // then
+      assertEquals(ErrorMessageCode.CUSTOMER_INACTIVE, ex.getPinkCatErrorMessageCode());
+    }
+  }
+
+  @Nested
+  class UpdatePasswordTest {
+
+    @Test
+    void 성공() {
+      // given
+      Long customerPk = activeCustomer.getPk();
+      String currentRaw = "oldPassword";
+      String newRaw = "newPassword";
+
+      when(customerRepository.findByPkAndActiveTrue(customerPk))
+          .thenReturn(Optional.of(activeCustomer));
+      when(passwordEncoder.matches(currentRaw, activeCustomer.getPassword())).thenReturn(true);
+      when(passwordEncoder.matches(newRaw, activeCustomer.getPassword())).thenReturn(false);
+      when(passwordEncoder.encode(newRaw)).thenReturn("encodedNewPassword");
+
+      // when
+      customerService.updatePassword(
+          customerPk, new CustomerUpdatePasswordRequestDto(currentRaw, newRaw));
+
+      // then
+      verify(customerRepository).save(activeCustomer);
+      assertEquals("encodedNewPassword", activeCustomer.getPassword());
+    }
+
+    @Test
+    void 실패_새비밀번호누락_null() {
+      // given
+      Long customerPk = activeCustomer.getPk();
+      String currentRaw = "oldPassword";
+      String newRaw = null;
+
+      when(customerRepository.findByPkAndActiveTrue(customerPk))
+          .thenReturn(Optional.of(activeCustomer));
+      when(passwordEncoder.matches(currentRaw, activeCustomer.getPassword())).thenReturn(true);
+
+      // when
+      PinkCatException ex =
+          assertThrows(
+              PinkCatException.class,
+              () ->
+                  customerService.updatePassword(
+                      customerPk, new CustomerUpdatePasswordRequestDto(currentRaw, newRaw)));
+
+      // then
+      assertEquals(ErrorMessageCode.INVALID_PASSWORD, ex.getPinkCatErrorMessageCode());
+    }
+
+    @Test
+    void 실패_새비밀번호누락_blank() {
+      // given
+      Long customerPk = activeCustomer.getPk();
+      String currentRaw = "oldPassword";
+      String newRaw = " ";
+
+      when(customerRepository.findByPkAndActiveTrue(customerPk))
+          .thenReturn(Optional.of(activeCustomer));
+      when(passwordEncoder.matches(currentRaw, activeCustomer.getPassword())).thenReturn(true);
+
+      // when
+      PinkCatException ex =
+          assertThrows(
+              PinkCatException.class,
+              () ->
+                  customerService.updatePassword(
+                      customerPk, new CustomerUpdatePasswordRequestDto(currentRaw, newRaw)));
+
+      // then
+      assertEquals(ErrorMessageCode.INVALID_PASSWORD, ex.getPinkCatErrorMessageCode());
+    }
+
+    @Test
+    void 실패_새비밀번호가기존과동일() {
+      // given
+      Long customerPk = activeCustomer.getPk();
+      String currentRaw = "samePassword";
+      String newRaw = "samePassword";
+
+      when(customerRepository.findByPkAndActiveTrue(customerPk))
+          .thenReturn(Optional.of(activeCustomer));
+      when(passwordEncoder.matches(currentRaw, activeCustomer.getPassword())).thenReturn(true);
+      when(passwordEncoder.matches(newRaw, activeCustomer.getPassword())).thenReturn(true);
+
+      // when
+      PinkCatException ex =
+          assertThrows(
+              PinkCatException.class,
+              () ->
+                  customerService.updatePassword(
+                      customerPk, new CustomerUpdatePasswordRequestDto(currentRaw, newRaw)));
+
+      // then
+      assertEquals(ErrorMessageCode.INVALID_PASSWORD, ex.getPinkCatErrorMessageCode());
+    }
+
+    @Test
+    void 실패_현재비밀번호불일치() {
+      // given
+      Long customerPk = activeCustomer.getPk();
+      String currentRaw = "wrongPassword";
+      String newRaw = "newPassword";
+
+      when(customerRepository.findByPkAndActiveTrue(customerPk))
+          .thenReturn(Optional.of(activeCustomer));
+      when(passwordEncoder.matches(currentRaw, activeCustomer.getPassword())).thenReturn(false);
+
+      // when
+      PinkCatException ex =
+          assertThrows(
+              PinkCatException.class,
+              () ->
+                  customerService.updatePassword(
+                      customerPk, new CustomerUpdatePasswordRequestDto(currentRaw, newRaw)));
+
+      // then
+      assertEquals(ErrorMessageCode.INVALID_PASSWORD, ex.getPinkCatErrorMessageCode());
+    }
+
+    @Test
+    void 실패_비활성화계정() {
+      // given
+      Long customerPk = inactiveCustomer.getPk();
+      String currentRaw = "password";
+      String newRaw = "newPassword";
+
+      when(customerRepository.findByPkAndActiveTrue(customerPk)).thenReturn(Optional.empty());
+
+      // when
+      PinkCatException ex =
+          assertThrows(
+              PinkCatException.class,
+              () ->
+                  customerService.updatePassword(
+                      customerPk, new CustomerUpdatePasswordRequestDto(currentRaw, newRaw)));
+
+      // then
+      assertEquals(ErrorMessageCode.CUSTOMER_INACTIVE, ex.getPinkCatErrorMessageCode());
+    }
+  }
+
+  @Nested
+  class DeleteTest {
+
+    @Test
+    void 성공() {
+      // given
+      Long customerPk = activeCustomer.getPk();
+
+      when(customerRepository.findByPkAndActiveTrue(customerPk))
+          .thenReturn(Optional.of(activeCustomer));
+
+      LocalDateTime previousUpdatedAt = activeCustomer.getUpdatedAt();
+      doAnswer(
+              invocation -> {
+                CustomerEntity customer = invocation.getArgument(0);
+                customer.setUpdatedAt(LocalDateTime.now());
+                return customer;
+              })
+          .when(customerRepository)
+          .save(any(CustomerEntity.class));
+
+      // when
+      customerService.delete(customerPk);
+
+      // then
+      assertFalse(activeCustomer.getActive());
+      assertNotNull(activeCustomer.getUpdatedAt());
+      assertNotEquals(previousUpdatedAt, activeCustomer.getUpdatedAt());
+
+      verify(customerRepository).save(activeCustomer);
+    }
+
+    @Test
+    void 실패_비활성화계정() {
+      // given
+      Long customerPk = inactiveCustomer.getPk();
+      when(customerRepository.findByPkAndActiveTrue(customerPk)).thenReturn(Optional.empty());
+
+      // when
+      PinkCatException ex =
+          assertThrows(PinkCatException.class, () -> customerService.delete(customerPk));
+
+      // then
+      assertEquals(ErrorMessageCode.CUSTOMER_INACTIVE, ex.getPinkCatErrorMessageCode());
+    }
+  }
+}

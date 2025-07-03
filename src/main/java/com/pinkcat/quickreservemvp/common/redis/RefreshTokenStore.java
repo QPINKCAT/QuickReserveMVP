@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class RefreshTokenStore {
 
     private final RedisTemplate<String, String> redisTemplate;
-    private static final String PREFIX = "RT:";
+    private static final String PREFIX = "RT:CUSTOMER:";
 
     @Value("${jwt.refresh-expiration}")
     private long refreshExpiration;

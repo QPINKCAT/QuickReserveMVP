@@ -10,7 +10,8 @@ import java.util.List;
 public interface CategoryRepository extends ActiveRepository<CategoryEntity, Long> {
     @Query("select c " +
             "from CategoryEntity c")
-    public List<CategoryEntity> findAllCategories();
+    List<CategoryEntity> findAllCategories();
 
-    List<CategoryDTO> findSubCategories(Long categoryId);
+    CategoryEntity findCategoryEntityByPk(Long pk);
+
 }

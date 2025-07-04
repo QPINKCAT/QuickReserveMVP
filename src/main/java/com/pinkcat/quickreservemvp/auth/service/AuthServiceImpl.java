@@ -33,6 +33,9 @@ public class AuthServiceImpl implements AuthService {
       throw new PinkCatException("이미 사용중인 ID 입니다", ErrorMessageCode.DUPLICATED_USER_ID);
     }
 
+    log.info("=================\n pw : {}, encoded : {}, length : {}"
+        , dto.getPassword(), passwordEncoder.encode(dto.getPassword()), passwordEncoder.encode(dto.getPassword()).length());
+
     CustomerEntity user =
         CustomerEntity.builder()
             .id(dto.getId())

@@ -13,7 +13,7 @@
     <content url="file://$MODULE_DIR$/../../src/test">
       <sourceFolder url="file://$MODULE_DIR$/../../src/test/java" isTestSource="true" />
     </content>
-    <orderEntry type="jdk" jdkName="corretto-21" jdkType="JavaSDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="QuickReserveMVP.main" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-batch:3.5.0" level="project" />
@@ -25,6 +25,8 @@
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-web:3.5.0" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-validation:3.5.0" level="project" />
     <orderEntry type="library" name="Gradle: io.jsonwebtoken:jjwt-api:0.11.5" level="project" />
+    <orderEntry type="library" name="Gradle: com.querydsl:querydsl-jpa:jakarta:5.0.0" level="project" />
+    <orderEntry type="library" name="Gradle: com.querydsl:querydsl-core:5.1.0" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-starter-test:3.5.0" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.batch:spring-batch-test:5.2.2" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.security:spring-security-test:6.5.0" level="project" />
@@ -49,6 +51,7 @@
     <orderEntry type="library" name="Gradle: org.springframework:spring-web:6.2.7" level="project" />
     <orderEntry type="library" name="Gradle: org.apache.tomcat.embed:tomcat-embed-el:10.1.41" level="project" />
     <orderEntry type="library" name="Gradle: org.hibernate.validator:hibernate-validator:8.0.2.Final" level="project" />
+    <orderEntry type="library" name="Gradle: com.mysema.commons:mysema-commons-lang:0.2.4" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-test-autoconfigure:3.5.0" level="project" />
     <orderEntry type="library" name="Gradle: org.springframework.boot:spring-boot-test:3.5.0" level="project" />
     <orderEntry type="library" name="Gradle: com.jayway.jsonpath:json-path:2.9.0" level="project" />

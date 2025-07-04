@@ -42,7 +42,7 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     @Override
-    public CategoryProductListResponseDTO getCategoryProducts(long categoryId, int page, int size) {
+    public CategoryProductListResponseDTO getCategoryProducts(long category, int page, int size) {
 
 
         List<CategoryProductListResponseDTO> products = new ArrayList<>();

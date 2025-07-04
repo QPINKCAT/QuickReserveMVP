@@ -27,9 +27,9 @@ public class CategoryController {
     @GetMapping("/products")
     @ResponseBody
     public BaseResponse<CategoryProductListResponseDTO> getCategoryProducts(
-            @RequestParam long categoryId,
+            @RequestParam long category,
             @RequestParam int page,
             @RequestParam int size) {
-        return new BaseResponse<>(categoryService.getCategoryProducts(categoryId, page, size));
+        return new BaseResponse<>(categoryService.getCategoryProducts(category, page, size));
     }
 }

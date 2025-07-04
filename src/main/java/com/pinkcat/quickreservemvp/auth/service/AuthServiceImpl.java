@@ -21,15 +21,15 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-  private final CustomerRepository customerRepository;
+  private final CustomerRepository userRepository;
   private final PasswordEncoder passwordEncoder;
   private final JwtTokenProvider jwtTokenProvider;
   private final RefreshTokenStore refreshTokenStore;
 
   @Override
   public void signup(SignupRequestDto dto) {
-    if (customerRepository.findById(dto.getId()).isPresent()) {
-      log.warn("회원가입 실패: 중복된 ID (userId={})", dto.getId());
+    if (userRepository.findById(dto.getId()).isPresent()) {
+      log.warn("[회원가입 실패] 중복된 ID: userId={}", dto.getId());
       throw new PinkCatException("이미 사용중인 ID 입니다", ErrorMessageCode.DUPLICATED_USER_ID);
     }
 
@@ -42,19 +42,20 @@ public class AuthServiceImpl implements AuthService {
             .email(dto.getEmail())
             .gender(dto.getGender())
             .build();
-    customerRepository.save(user);
-    log.info("회원가입 성공: customerId={}", user.getId());
+    userRepository.save(user);
+    log.info("[회원가입 성공] customerId={}", user.getId());
   }
 
   @Override
   public LoginResponseDto login(LoginRequestDto dto) {
     CustomerEntity user =
-        customerRepository
+        userRepository
             .findById(dto.getUserId())
+            .filter(CustomerEntity::getActive)
             .filter(c -> passwordEncoder.matches(dto.getPassword(), c.getPassword()))
             .orElseThrow(
                 () -> {
-                  log.warn("로그인 실패: ID 또는 비밀번호 불일치 (userId={})", dto.getUserId());
+                  log.warn("[로그인 실패] ID/비밀번호 불일치 or 비활성화 계정: userId={}", dto.getUserId());
                   return new ResponseStatusException(
                       HttpStatus.UNAUTHORIZED, "사용자 ID 또는 비밀번호가 올바르지 않습니다.");
                 });
@@ -63,13 +64,13 @@ public class AuthServiceImpl implements AuthService {
     String refreshToken = jwtTokenProvider.createRefreshToken(user.getPk());
 
     refreshTokenStore.save(user.getId(), refreshToken);
-    log.info("로그인 성공: userId={}", user.getId());
+    log.info("[로그인 성공] userId={}", user.getId());
     return LoginResponseDto.builder().accessToken(accessToken).refreshToken(refreshToken).build();
   }
 
   @Override
   public void logout(String userId) {
     refreshTokenStore.delete(userId);
-    log.info("로그아웃 성공: userId={}", userId);
+    log.info("[로그아웃 성공] userId={}", userId);
   }
 }

@@ -6,5 +6,7 @@ import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
 import java.util.Optional;
 
 public interface CustomerRepository extends ActiveRepository<CustomerEntity, Long> {
-    Optional<CustomerEntity> findById(String userId);
+  Optional<CustomerEntity> findById(String userId);
+
+  Optional<CustomerEntity> findByPkAndActiveTrue(Long customerPk);
 }

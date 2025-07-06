@@ -4,6 +4,6 @@ import com.pinkcat.quickreservemvp.wish.dto.DeleteWishlistRequestDTO;
 import com.pinkcat.quickreservemvp.wish.dto.WishlistResponseDTO;
 
 public interface WishService {
-    WishlistResponseDTO getWishlist(int page, int size);
-    boolean deleteWishlist(DeleteWishlistRequestDTO request);
+    WishlistResponseDTO getWishlist(Long userPk, int page, int size);
+    boolean deleteWishlist(Long userPk, DeleteWishlistRequestDTO request);
 }

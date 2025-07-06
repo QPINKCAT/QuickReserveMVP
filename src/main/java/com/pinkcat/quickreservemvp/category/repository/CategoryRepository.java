@@ -5,6 +5,7 @@ import com.pinkcat.quickreservemvp.common.repository.ActiveRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface CategoryRepository extends ActiveRepository<CategoryEntity, Long> {
     @Query("select c " +
@@ -15,6 +16,6 @@ public interface CategoryRepository extends ActiveRepository<CategoryEntity, Lon
             "c.topCategory.pk asc")
     List<CategoryEntity> findAllCategories();
 
-    CategoryEntity findCategoryEntityByPk(Long pk);
+    Optional<CategoryEntity> findCategoryEntityByPk(Long pk);
 
 }

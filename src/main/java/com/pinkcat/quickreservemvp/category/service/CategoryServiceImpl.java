@@ -27,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -71,17 +70,20 @@ public class CategoryServiceImpl implements CategoryService{
 
         // 각 카테고리별 상품 조회
         for (Long id : subCategories) {
-            CategoryEntity c = categoryRepository.findCategoryEntityByPk(id);
+            CategoryEntity c = categoryRepository.findCategoryEntityByPk(id).orElseThrow(() ->
+                    new PinkCatException("존재하지 않는 카테고리입니다.", ErrorMessageCode.NO_SUCH_CATEGORY));
+
             List<CategoryProductEntity> categoryProducts = categoryProductRepository.findAllByCategory(c);
+
             for(CategoryProductEntity categoryProduct : categoryProducts){
             ProductEntity product = productRepository.findByPk(categoryProduct.getPk())
-                .orElseThrow(() -> new PinkCatException("존재하지 않는 상품입니다.", ErrorMessageCode.No_SUCH_PRODUCT));
+                .orElseThrow(() -> new PinkCatException("존재하지 않는 상품입니다.", ErrorMessageCode.NO_SUCH_PRODUCT));
 
                 // 할인 정보 불러오기
                 int price = product.getPrice();
                 DiscountEntity discount = discountRepository.findByProduct(product).orElse(null);
                 // 할인이 적용된 상품이고, 할인 기간 중에 있다면 할인 가격으로 가격 정보 업데이트
-                if (discount != null && isAppliable(discount.getStartAt(), discount.getEndAt())) price = discount.getDiscountPrice();
+                if (discount != null && isApplicable(discount.getStartAt(), discount.getEndAt())) price = discount.getDiscountPrice();
 
                 // 썸네일 정보 불러오기
                 String thumbnail = productImageRepository.findThumbnailByProductPk(product.getPk()).orElse(null);
@@ -110,7 +112,7 @@ public class CategoryServiceImpl implements CategoryService{
                 .build();
     }
 
-    private boolean isAppliable(LocalDateTime startAt, LocalDateTime endAt) {
+    private boolean isApplicable(LocalDateTime startAt, LocalDateTime endAt) {
         LocalDateTime now = LocalDateTime.now();
         return now.isAfter(startAt) && now.isBefore(endAt);
     }

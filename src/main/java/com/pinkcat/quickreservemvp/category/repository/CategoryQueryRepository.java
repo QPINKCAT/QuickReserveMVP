@@ -18,12 +18,13 @@ public class CategoryQueryRepository implements CategoryCustomRepository {
         this.queryFactory = queryFactory;
     }
 
-     // 자기 자신 하위의 카테고리들을 조회하는 쿼리
+    QCategoryEntity category = QCategoryEntity.categoryEntity;
+
+     // 자기 자신 하위의 카테고리들을 조회
     @Override
     public List<Long> findSubCategoryIds(Long categoryId) {
         Set<Long> ids = new HashSet<>();
 
-        QCategoryEntity category = QCategoryEntity.categoryEntity;
         Deque<Long> stack = new ArrayDeque<>();
         stack.push(categoryId);
 
@@ -45,6 +46,25 @@ public class CategoryQueryRepository implements CategoryCustomRepository {
         ids.add(categoryId);
 
         return new ArrayList<>(ids);
-        
+    }
+
+    // 자신의 상위 카테고리들을 조회
+    @Override
+    public List<Long> findParentCategoryIds(Long categoryId) {
+        List<Long> ids = new ArrayList<>();
+        Long currentId = categoryId;
+
+        while(currentId != null){
+            ids.add(currentId);
+
+            Long parentId = queryFactory
+                    .select(category.topCategory.pk)
+                    .from(category)
+                    .where(category.pk.eq(currentId))
+                    .fetchOne();
+
+            currentId = parentId;
+        }
+        return ids;
     }
 }

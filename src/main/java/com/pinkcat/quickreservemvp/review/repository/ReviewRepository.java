@@ -8,9 +8,8 @@ import org.springframework.data.repository.query.Param;
 public interface ReviewRepository extends ActiveRepository<ReviewEntity, Long> {
     @Query("select coalesce(count(r.pk),0) " +
             "from ReviewEntity r " +
-            "join OrderItemEntity oi on r.orderItem = oi " +
-            "join ProductEntity p on oi.product = p " +
+            "join r.orderItem oi " +
+            "join oi.product p " +
             "where p.pk = :productPk")
     Integer countReviewsByProductPk(@Param("productPk") Long productPk);
-
 }

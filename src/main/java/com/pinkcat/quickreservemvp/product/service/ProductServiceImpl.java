@@ -10,14 +10,22 @@ import com.pinkcat.quickreservemvp.common.exceptions.PinkCatException;
 import com.pinkcat.quickreservemvp.product.dto.ProductInfoResponseDTO;
 import com.pinkcat.quickreservemvp.product.dto.ProductInfoResponseDTO.Category;
 import com.pinkcat.quickreservemvp.product.dto.ProductInfoResponseDTO.Image;
+import com.pinkcat.quickreservemvp.product.dto.ProductReviewResponseDTO;
+import com.pinkcat.quickreservemvp.product.dto.ProductReviewResponseDTO.Review;
 import com.pinkcat.quickreservemvp.product.entity.DiscountEntity;
 import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
 import com.pinkcat.quickreservemvp.product.repository.DiscountRepository;
 import com.pinkcat.quickreservemvp.product.repository.ProductImageRepository;
 import com.pinkcat.quickreservemvp.product.repository.ProductRepository;
+import com.pinkcat.quickreservemvp.review.entity.ReviewEntity;
+import com.pinkcat.quickreservemvp.review.repository.ReviewCustomRepository;
 import com.pinkcat.quickreservemvp.review.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +45,7 @@ public class ProductServiceImpl implements ProductService {
     private final CategoryCustomRepository categoryCustomRepository;
     private final DiscountRepository discountRepository;
     private final ReviewRepository reviewRepository;
+    private final ReviewCustomRepository reviewCustomRepository;
     private final ProductImageRepository productImageRepository;
 
 
@@ -94,4 +103,27 @@ public class ProductServiceImpl implements ProductService {
                 .images(images)
                 .build();
     }
+
+    @Override
+    public ProductReviewResponseDTO getProductReviews(Long productId, int page, int size, Integer minRating, Integer maxRating){
+
+        Pageable pageable = PageRequest.of(page-1, size, Sort.by("createdAt").descending());
+        Page<ReviewEntity> result = reviewCustomRepository.findProductReviewsByConditions(productId, minRating, maxRating, pageable);
+
+        List<Review> reviews = result.stream().map(r -> Review.builder()
+                .customerId(r.getCustomer().getId())
+                .productName(r.getOrderItem().getProduct().getProductName())
+                .rating(r.getRating())
+                .comment(r.getComment())
+                .createdAt(r.getCreatedAt())
+                .build()).toList();
+
+        return ProductReviewResponseDTO.builder()
+                .page(page)
+                .totalPages(result.getTotalPages())
+                .size(size)
+                .reviews(reviews)
+                .build();
+    }
+
 }

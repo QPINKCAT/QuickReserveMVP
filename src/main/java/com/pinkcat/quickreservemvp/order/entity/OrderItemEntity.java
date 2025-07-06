@@ -36,11 +36,6 @@ public class OrderItemEntity extends BaseEntity {
     @Column(name = "product_order_item_status", nullable = false)
     private OrderStatusEnum status;
 
-    @Comment("고객")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_pk", nullable = false, updatable = false)
-    private CustomerEntity customer;
-
     @Comment("상품")
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "product_pk", nullable = false, updatable = false)
@@ -48,6 +43,6 @@ public class OrderItemEntity extends BaseEntity {
 
     @Comment("주문")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_pk", nullable = false, updatable = false)
+    @JoinColumn(name = "product_order_pk", nullable = false, updatable = false)
     private OrderEntity order;
 }

@@ -31,71 +31,60 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class WishServiceImpl implements WishService {
 
-  private final CustomerRepository customerRepository;
-  private final WishRepository wishRepository;
-  private final ProductRepository productRepository;
-  private final ProductImageRepository productImageRepository;
+    private final CustomerRepository customerRepository;
+    private final WishRepository wishRepository;
+    private final ProductRepository productRepository;
+    private final ProductImageRepository productImageRepository;
 
-  @Override
-  public WishlistResponseDTO getWishlist(Long userPk, int page, int size) {
+    @Override
+    public WishlistResponseDTO getWishlist(Long userPk, int page, int size) {
 
-    CustomerEntity customer =
-        customerRepository
-            .findByPkAndActiveTrue(userPk)
-            .orElseThrow(
-                () -> {
-                  log.warn("[내 정보 조회 실패] 비활성화 계정/계정 없음: customerPk={}", userPk);
-                  throw new PinkCatException(
-                      "비활성화된 계정입니다. 관리자에게 문의해주세요.", ErrorMessageCode.CUSTOMER_INACTIVE);
-                });
+        CustomerEntity customer = customerRepository.findByPkAndActiveTrue(userPk).orElseThrow(() ->
+            new PinkCatException("비활성화된 계정입니다. 관리자에게 문의해주세요.", ErrorMessageCode.CUSTOMER_INACTIVE));
 
-    List<WishlistResponseDTO.WishProduct> wishlist = new ArrayList<>();
+        List<WishlistResponseDTO.WishProduct> wishlist = new ArrayList<>();
 
-    // 위시리스트 추가 내림차순 정렬
-    Pageable pageable = PageRequest.of(page - 1, size, Sort.by("createdAt").descending());
-    Page<CustomerProductWishEntity> wishResult =
-        wishRepository.findAllByCustomerPk(customer.getPk(), pageable);
+        // 위시리스트 추가 내림차순 정렬
+        Pageable pageable = PageRequest.of(page - 1, size, Sort.by("createdAt").descending());
+        Page<CustomerProductWishEntity> wishResult =
+            wishRepository.findAllByCustomerPk(customer.getPk(), pageable);
 
-    for (CustomerProductWishEntity wish : wishResult) {
-      log.info("Wish: {}", wish);
-      ProductEntity product = productRepository.findByPk(wish.getProduct().getPk());
-      Optional<String> thumbnail = productImageRepository.findThumbnailByProductPk(product.getPk());
-      wishlist.add(
-          WishlistResponseDTO.WishProduct.builder()
-              .wishId(wish.getPk())
-              .productId(product.getPk())
-              .thumbnail(thumbnail.orElse(null))
-              .name(product.getProductName())
-              .price(product.getPrice())
-              .avgRating(product.getAvgRating())
-              .status(String.valueOf(product.getProductStatus()))
-              .build());
+        for (CustomerProductWishEntity wish : wishResult) {
+            log.info("Wish: {}", wish);
+            Optional<ProductEntity> product = productRepository.findByPk(wish.getProduct().getPk());
+            if (product.isPresent()) {
+
+                Optional<String> thumbnail = productImageRepository.findThumbnailByProductPk(product.get().getPk());
+                wishlist.add(
+                    WishlistResponseDTO.WishProduct.builder()
+                        .wishId(wish.getPk())
+                        .productId(product.get().getPk())
+                        .thumbnail(thumbnail.orElse(null))
+                        .name(product.get().getProductName())
+                        .price(product.get().getPrice())
+                        .avgRating(product.get().getAvgRating())
+                        .status(String.valueOf(product.get().getProductStatus()))
+                        .build());
+            }
+        }
+
+        return WishlistResponseDTO.builder()
+            .page(page)
+            .totalPages(wishResult.getTotalPages())
+            .size(size)
+            .wishlist(wishlist)
+            .build();
     }
 
-    return WishlistResponseDTO.builder()
-        .page(page)
-        .totalPages(wishResult.getTotalPages())
-        .size(size)
-        .wishlist(wishlist)
-        .build();
-  }
+    @Override
+    @Transactional
+    public boolean deleteWishlist(Long userPk, DeleteWishlistRequestDTO request) {
 
-  @Transactional
-  @Override
-  public boolean deleteWishlist(Long userPk, DeleteWishlistRequestDTO request) {
+      CustomerEntity customer = customerRepository.findByPkAndActiveTrue(userPk).orElseThrow(() ->
+              new PinkCatException("비활성화된 계정입니다. 관리자에게 문의해주세요.", ErrorMessageCode.CUSTOMER_INACTIVE));
 
-    CustomerEntity customer =
-        customerRepository
-            .findByPkAndActiveTrue(userPk)
-            .orElseThrow(
-                () -> {
-                  log.warn("[내 정보 조회 실패] 비활성화 계정/계정 없음: customerPk={}", userPk);
-                  throw new PinkCatException(
-                      "비활성화된 계정입니다. 관리자에게 문의해주세요.", ErrorMessageCode.CUSTOMER_INACTIVE);
-                });
-
-    Optional<CustomerProductWishEntity> wish = wishRepository.findByPk(request.getWishId());
-    wishRepository.delete(wish.orElseThrow(() -> new EntityNotFoundException("데이터가 없습니다.")));
-    return true;
-  }
+      Optional<CustomerProductWishEntity> wish = wishRepository.findByPk(request.getWishId());
+        wishRepository.delete(wish.orElseThrow(() -> new EntityNotFoundException("데이터가 없습니다.")));
+        return true;
+    }
 }

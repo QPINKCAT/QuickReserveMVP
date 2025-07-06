@@ -9,7 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("/api/v1/wish")
+@RequestMapping("/api/wish")
 @RequiredArgsConstructor
 public class WishController {
     private final WishService wishService;

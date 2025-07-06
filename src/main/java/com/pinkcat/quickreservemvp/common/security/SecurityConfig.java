@@ -34,11 +34,13 @@ public class SecurityConfig {
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
         .authorizeHttpRequests(
             auth ->
-                auth.requestMatchers("/api/v1/**")
-                    .permitAll()
-                    .requestMatchers("/api/auth/login", "/api/auth/signup")
+                auth.requestMatchers("/api/auth/login", "/api/auth/signup")
                     .permitAll()
                     .requestMatchers("/api/products/**")
+                    .permitAll()
+                    .requestMatchers("/api/categories/**")
+                    .permitAll()
+                    .requestMatchers("/api/wish/**")
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/reviews")
                     .permitAll()

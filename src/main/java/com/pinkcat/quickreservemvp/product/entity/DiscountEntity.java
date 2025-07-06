@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "discount")
 @Getter
@@ -22,11 +24,11 @@ public class DiscountEntity extends BaseEntity {
 
     @Comment("할인 시작일")
     @Column(name = "discount_start_at")
-    private Long startAt;
+    private LocalDateTime startAt;
 
     @Comment("할인 종료일")
     @Column(name = "discount_end_at")
-    private Long endAt;
+    private LocalDateTime endAt;
 
     @Comment("상품")
     @OneToOne(fetch = FetchType.LAZY)

@@ -20,7 +20,7 @@ public class CategoryProductEntity extends BaseEntity {
     @Comment("카테고리")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_pk", nullable = false, updatable = false)
-    private CategoryEntity categoryEntity;
+    private CategoryEntity category;
 
     @Comment("상품")
     @ManyToOne(fetch = FetchType.LAZY)

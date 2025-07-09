@@ -16,6 +16,7 @@ import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
 import com.pinkcat.quickreservemvp.product.repository.DiscountRepository;
 import com.pinkcat.quickreservemvp.product.repository.ProductImageRepository;
 import com.pinkcat.quickreservemvp.product.repository.ProductRepository;
+import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -113,7 +114,7 @@ public class CategoryServiceImpl implements CategoryService{
     }
 
     private boolean isApplicable(LocalDateTime startAt, LocalDateTime endAt) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
         return now.isAfter(startAt) && now.isBefore(endAt);
     }
 }

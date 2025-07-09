@@ -1,8 +1,7 @@
-package com.pinkcat.quickreservemvp.wish.entity;
+package com.pinkcat.quickreservemvp.category.entity;
 
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
 import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
-import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,20 +10,20 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
 @Entity
-@Table(name = "customer_product_wish")
-@Getter
+@Table(name = "category_product")
 @Builder
-@AllArgsConstructor
+@Getter
 @NoArgsConstructor
-@AttributeOverride(name = "pk", column = @Column(name = "customer_product_wish_pk"))
-public class CustomerProductWishEntity extends BaseEntity {
-    @Comment("고객")
+@AllArgsConstructor
+@AttributeOverride(name = "pk", column = @Column(name = "category_product_pk"))
+public class CategoryProductEntity extends BaseEntity {
+    @Comment("카테고리")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_pk", nullable = false, updatable = false)
-    private CustomerEntity customer;
+    @JoinColumn(name = "category_pk", nullable = false, updatable = false)
+    private CategoryEntity category;
 
     @Comment("상품")
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_pk", nullable = false, updatable = false)
     private ProductEntity product;
 }

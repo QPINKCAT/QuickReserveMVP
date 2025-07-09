@@ -15,12 +15,8 @@ import org.hibernate.annotations.Comment;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@AttributeOverride(name = "pk", column = @Column(name = "product_image_pk"))
 public class ProductImageEntity extends BaseEntity {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "product_image_pk")
-//    private Long productImagePk;
-
     @Comment("이미지 url")
     @Column(name = "product_image_url")
     private String url;

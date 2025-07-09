@@ -3,16 +3,7 @@ package com.pinkcat.quickreservemvp.review.entity;
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
 import com.pinkcat.quickreservemvp.order.entity.OrderItemEntity;
 import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,12 +16,8 @@ import org.hibernate.annotations.Comment;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@AttributeOverride(name = "pk", column = @Column(name = "customer_product_review_pk"))
 public class ReviewEntity extends BaseEntity {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "customer_product_review_pk")
-//    private Long reviewPk;
-
     @Comment("평점, min : 1, max : 10")
     @Column(name = "customer_product_review_rating", nullable = false)
     private Integer rating;

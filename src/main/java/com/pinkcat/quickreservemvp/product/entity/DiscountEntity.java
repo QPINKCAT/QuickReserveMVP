@@ -8,29 +8,27 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "discount")
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@AttributeOverride(name = "pk", column = @Column(name = "discount_pk"))
 public class DiscountEntity extends BaseEntity {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "discount_pk")
-//    private Long discountPk;
-
     @Comment("할인이 적용된 가격")
     @Column(name = "discount_price")
     private Integer discountPrice;
 
     @Comment("할인 시작일")
     @Column(name = "discount_start_at")
-    private Long startAt;
+    private LocalDateTime startAt;
 
     @Comment("할인 종료일")
     @Column(name = "discount_end_at")
-    private Long endAt;
+    private LocalDateTime endAt;
 
     @Comment("상품")
     @OneToOne(fetch = FetchType.LAZY)

@@ -20,11 +20,6 @@ import org.hibernate.annotations.Comment;
 @NoArgsConstructor
 @AttributeOverride(name = "pk", column = @Column(name = "customer_pk"))
 public class CustomerEntity extends BaseEntity {
-  //    @Id
-  //    @GeneratedValue(strategy = GenerationType.IDENTITY)
-  //    @Column(name = "customer_pk")
-  //    private Long customerPk;
-
   @Comment("고객 아이디")
   @Column(name = "customer_id", length = 320, unique = true, nullable = false)
   private String id;

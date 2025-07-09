@@ -3,14 +3,7 @@ package com.pinkcat.quickreservemvp.payment.entity;
 import com.pinkcat.quickreservemvp.common.enums.PaymentStatusEnum;
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
 import com.pinkcat.quickreservemvp.order.entity.OrderItemEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,12 +16,8 @@ import org.hibernate.annotations.Comment;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@AttributeOverride(name = "pk", column = @Column(name = "payment_pk"))
 public class PaymentEntity extends BaseEntity {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    @Column(name = "payment_pk")
-//    private Long paymentPk;
-
     @Enumerated(EnumType.STRING)
     @Comment("결제상태")
     @Column(name = "payment_status")

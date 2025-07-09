@@ -100,7 +100,7 @@ public class WishServiceImpl implements WishService {
             new PinkCatException("비활성화된 계정입니다. 관리자에게 문의해주세요.", ErrorMessageCode.CUSTOMER_INACTIVE));
 
         ProductEntity product = productRepository.findByPk(productId).orElseThrow(() ->
-            new PinkCatException("존재하지 않느 상품입니다.", ErrorMessageCode.NO_SUCH_PRODUCT));
+            new PinkCatException("존재하지 않는 상품입니다.", ErrorMessageCode.NO_SUCH_PRODUCT));
 
         if (product.getProductStatus() == ProductStatusEnum.OFF) {
             return AddWishResponseDTO.builder()

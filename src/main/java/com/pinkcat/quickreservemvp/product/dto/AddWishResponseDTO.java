@@ -13,5 +13,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AddWishResponseDTO {
     @NotNull
-    String result;
+    private String result;
 }

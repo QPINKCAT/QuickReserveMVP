@@ -2,7 +2,11 @@ package com.pinkcat.quickreservemvp.cart.repository;
 
 import com.pinkcat.quickreservemvp.cart.entity.CartEntity;
 import com.pinkcat.quickreservemvp.common.repository.ActiveRepository;
+import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
+import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
+import java.util.Optional;
 
 public interface CartRepository extends ActiveRepository<CartEntity, Long> {
 
+    Optional<CartEntity> findCartEntityByCustomerAndProduct(CustomerEntity customer, ProductEntity product);
 }

@@ -15,7 +15,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class ProductReviewResponseDTO {
+public class ProductReviewListResponseDTO {
     @NotNull
     private int page;
 

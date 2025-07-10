@@ -10,8 +10,8 @@ import com.pinkcat.quickreservemvp.common.exceptions.PinkCatException;
 import com.pinkcat.quickreservemvp.product.dto.ProductInfoResponseDTO;
 import com.pinkcat.quickreservemvp.product.dto.ProductInfoResponseDTO.Category;
 import com.pinkcat.quickreservemvp.product.dto.ProductInfoResponseDTO.Image;
-import com.pinkcat.quickreservemvp.product.dto.ProductReviewResponseDTO;
-import com.pinkcat.quickreservemvp.product.dto.ProductReviewResponseDTO.Review;
+import com.pinkcat.quickreservemvp.product.dto.ProductReviewListResponseDTO;
+import com.pinkcat.quickreservemvp.product.dto.ProductReviewListResponseDTO.Review;
 import com.pinkcat.quickreservemvp.product.entity.DiscountEntity;
 import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
 import com.pinkcat.quickreservemvp.product.repository.DiscountRepository;
@@ -105,7 +105,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ProductReviewResponseDTO getProductReviews(Long productId, int page, int size, Integer minRating, Integer maxRating){
+    public ProductReviewListResponseDTO getProductReviews(Long productId, int page, int size, Integer minRating, Integer maxRating){
 
         Pageable pageable = PageRequest.of(page-1, size, Sort.by("createdAt").descending());
         Page<ReviewEntity> result = reviewCustomRepository.findProductReviewsByConditions(productId, minRating, maxRating, pageable);
@@ -118,7 +118,7 @@ public class ProductServiceImpl implements ProductService {
                 .createdAt(r.getCreatedAt())
                 .build()).toList();
 
-        return ProductReviewResponseDTO.builder()
+        return ProductReviewListResponseDTO.builder()
                 .page(page)
                 .totalPages(result.getTotalPages())
                 .size(size)

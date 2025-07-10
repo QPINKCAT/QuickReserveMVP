@@ -1,10 +1,10 @@
 package com.pinkcat.quickreservemvp.product.service;
 
 import com.pinkcat.quickreservemvp.product.dto.ProductInfoResponseDTO;
-import com.pinkcat.quickreservemvp.product.dto.ProductReviewResponseDTO;
+import com.pinkcat.quickreservemvp.product.dto.ProductReviewListResponseDTO;
 
 public interface ProductService {
     ProductInfoResponseDTO getProductInfo(Long productId);
 
-    ProductReviewResponseDTO getProductReviews(Long productId, int page, int size, Integer minRating, Integer maxRating);
+    ProductReviewListResponseDTO getProductReviews(Long productId, int page, int size, Integer minRating, Integer maxRating);
 }

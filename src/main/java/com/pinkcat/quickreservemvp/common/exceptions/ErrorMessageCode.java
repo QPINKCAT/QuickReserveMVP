@@ -13,10 +13,13 @@ public enum ErrorMessageCode {
   // ErrorMessageCode.java
   INVALID_PASSWORD(40202, "현재 비밀번호가 일치하지 않습니다."),
 
-  // Product : 40300~40400
+  // Product : 40300~40399
   NO_SUCH_PRODUCT(40301, "존재하지 않는 상품입니다."),
   NO_SUCH_CATEGORY(40302, "존재하지 않는 카테고리입니다."),
-  NO_SUCH_CATEGORY_PRODUCT(40303, "카테고리가 존재하지 않는 상품입니다.");
+  NO_SUCH_CATEGORY_PRODUCT(40303, "카테고리가 존재하지 않는 상품입니다."),
+
+  // Order : 40400 ~ 40499
+  NO_SUCH_ORDER_ITEM(40401, "존재하지 않는 주문 상품입니다.");
 
   private final int codeValue;
   private final String message;

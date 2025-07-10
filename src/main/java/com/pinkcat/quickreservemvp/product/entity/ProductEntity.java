@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Comment;
 
 @Entity
@@ -36,10 +37,12 @@ public class ProductEntity extends BaseEntity {
     @Column(name = "product_stock")
     private Integer stock;
 
+    @Setter
     @Comment("평균 평점")
     @Column(name = "product_avg_rating")
     private Float avgRating;
 
+    @Setter
     @Comment("상품 리뷰 개수")
     @Column(name = "product_review_count")
     private Integer reviewCnt;

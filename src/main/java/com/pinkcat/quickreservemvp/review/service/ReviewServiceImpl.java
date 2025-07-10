@@ -10,6 +10,7 @@ import com.pinkcat.quickreservemvp.order.entity.OrderItemEntity;
 import com.pinkcat.quickreservemvp.order.repository.OrderItemRepository;
 import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
 import com.pinkcat.quickreservemvp.product.repository.ProductRepository;
+import com.pinkcat.quickreservemvp.review.dto.ReviewResponseDTO;
 import com.pinkcat.quickreservemvp.review.dto.WriteReviewRequestDTO;
 import com.pinkcat.quickreservemvp.review.dto.WriteReviewResponseDTO;
 import com.pinkcat.quickreservemvp.review.entity.ReviewEntity;
@@ -32,15 +33,23 @@ public class ReviewServiceImpl implements ReviewService{
     private final ProductRepository productRepository;
     private final OrderItemRepository orderItemRepository;
 
-    /*
-        1. 로그인 한 & 상품 구매를 확정한(=order_item > status > used) 유저가 상품 리뷰를 등록한다
-            1. 위 조건을 충족하지 않을 경우 리뷰를 작성할 수 없으며, 리뷰 작성 버튼을 노출하지 않는다
-        2. 리뷰 등록 시
-            1. 평점만 등록하는 것도 가능하다 (= 리뷰는 필수가 아님)
-            2. 글은 300자 이내로 작성해야 한다
-        3. 상품 구매 확정(=used) 후 2주 이내만 등록 가능
-        4. 등록 후 전체 평점에 평점이 반영 되어야한다
-     */
+    @Override
+    public ReviewResponseDTO getReview(Long reviewId){
+        log.info("====리뷰 조회");
+
+        ReviewEntity review = reviewRepository.findByPk(reviewId).orElseThrow(() ->
+            new PinkCatException("존재하지 않는 리뷰입니다.", ErrorMessageCode.NO_SUCH_REVIEW));
+
+        // active 타입 논의 필요
+//        if (review.getActive() == 0) throw new PinkCatException("존재하지 않는 리뷰입니다", ErrorMessageCode.NO_SUCH_REVIEW);
+
+        return ReviewResponseDTO.builder()
+            .rating(review.getRating())
+            .comment(review.getComment())
+            .createdAt(review.getCreatedAt())
+            .updatedAt(review.getUpdatedAt())
+            .build();
+    }
 
     @Override
     @Transactional

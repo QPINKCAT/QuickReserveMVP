@@ -16,5 +16,7 @@ public interface ReviewRepository extends ActiveRepository<ReviewEntity, Long> {
             "where p.pk = :productPk")
     Integer countReviewsByProductPk(@Param("productPk") Long productPk);
 
+    Optional<ReviewEntity> findByPk(Long reviewPk);
+
     Optional<ReviewEntity> findByOrderItemAndCustomer(OrderItemEntity orderIten, CustomerEntity customer);
 }

@@ -19,7 +19,10 @@ public enum ErrorMessageCode {
   NO_SUCH_CATEGORY_PRODUCT(40303, "카테고리가 존재하지 않는 상품입니다."),
 
   // Order : 40400 ~ 40499
-  NO_SUCH_ORDER_ITEM(40401, "존재하지 않는 주문 상품입니다.");
+  NO_SUCH_ORDER_ITEM(40401, "존재하지 않는 주문 상품입니다."),
+
+  // Review : 40500 ~ 40599
+  NO_SUCH_REVIEW(40501, "존재하지 않는 리뷰입니다.");
 
   private final int codeValue;
   private final String message;

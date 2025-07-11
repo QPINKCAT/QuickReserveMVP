@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class WriteReviewResponseDTO {
+public class CUDReviewResponseDTO {
     @NotNull
     private String result;
 }

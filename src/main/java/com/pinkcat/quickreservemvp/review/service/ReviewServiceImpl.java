@@ -11,8 +11,9 @@ import com.pinkcat.quickreservemvp.order.repository.OrderItemRepository;
 import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
 import com.pinkcat.quickreservemvp.product.repository.ProductRepository;
 import com.pinkcat.quickreservemvp.review.dto.ReviewResponseDTO;
+import com.pinkcat.quickreservemvp.review.dto.UpdateReviewRequestDTO;
 import com.pinkcat.quickreservemvp.review.dto.WriteReviewRequestDTO;
-import com.pinkcat.quickreservemvp.review.dto.WriteReviewResponseDTO;
+import com.pinkcat.quickreservemvp.review.dto.CUDReviewResponseDTO;
 import com.pinkcat.quickreservemvp.review.entity.ReviewEntity;
 import com.pinkcat.quickreservemvp.review.repository.ReviewRepository;
 import java.time.LocalDateTime;
@@ -53,7 +54,7 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     @Transactional
-    public WriteReviewResponseDTO addReview(Long userPk, Long orderItemId, WriteReviewRequestDTO request){
+    public CUDReviewResponseDTO addReview(Long userPk, Long orderItemId, WriteReviewRequestDTO request){
 
         CustomerEntity customer = customerRepository.findByPkAndActiveTrue(userPk).orElseThrow(() ->
             new PinkCatException("비활성화된 계정입니다. 관리자에게 문의해주세요.", ErrorMessageCode.CUSTOMER_INACTIVE));
@@ -65,14 +66,14 @@ public class ReviewServiceImpl implements ReviewService{
             new PinkCatException("존재하지 않는 상품입니다.", ErrorMessageCode.NO_SUCH_PRODUCT));
 
         if (product.getProductStatus() == ProductStatusEnum.OFF){
-            return WriteReviewResponseDTO.builder()
+            return CUDReviewResponseDTO.builder()
                 .result("판매중지된 상품의 리뷰를 작성할 수 없습니다.")
                 .build();
         }
 
         // 리뷰를 두 개 이상 쓸 수 없음
         if (reviewRepository.findByOrderItemAndCustomer(orderItem, customer).isPresent()){
-            return WriteReviewResponseDTO.builder()
+            return CUDReviewResponseDTO.builder()
                 .result("이미 리뷰를 작성했습니다.")
                 .build();
         }
@@ -95,13 +96,49 @@ public class ReviewServiceImpl implements ReviewService{
             product.setAvgRating(updatedAvgRating);
             productRepository.save(product);
 
-            return WriteReviewResponseDTO.builder()
+            return CUDReviewResponseDTO.builder()
                 .result("리뷰가 성공적으로 등록되었습니다.")
                 .build();
         }
 
-        return WriteReviewResponseDTO.builder()
+        return CUDReviewResponseDTO.builder()
             .result("리뷰 작성에 실패했습니다.")
+            .build();
+    }
+
+    @Override
+    @Transactional
+    public CUDReviewResponseDTO updateReview(Long userPk, Long reviewId, UpdateReviewRequestDTO request){
+        customerRepository.findByPkAndActiveTrue(userPk).orElseThrow(() ->
+            new PinkCatException("비활성화된 계정입니다. 관리자에게 문의해주세요.", ErrorMessageCode.CUSTOMER_INACTIVE));
+
+        ReviewEntity review = reviewRepository.findByPk(reviewId).orElseThrow(() ->
+            new PinkCatException("존재하지 않는 리뷰입니다.", ErrorMessageCode.NO_SUCH_REVIEW));
+
+        OrderItemEntity orderItem = orderItemRepository.findByPk(review.getOrderItem().getPk()).orElseThrow(() ->
+            new PinkCatException("존재하지 않는 주문 상품입니다.", ErrorMessageCode.NO_SUCH_ORDER_ITEM));
+
+        ProductEntity product = productRepository.findByPk(orderItem.getProduct().getPk()).orElseThrow(() ->
+            new PinkCatException("존재하지 않는 상품입니다.", ErrorMessageCode.NO_SUCH_PRODUCT));
+
+        if (product.getProductStatus() == ProductStatusEnum.OFF){
+            return CUDReviewResponseDTO.builder()
+                .result("판매중지된 상품의 리뷰를 수정할 수 없습니다.")
+                .build();
+        }
+
+        review.setRating(review.getRating());
+        review.setComment(request.getComment());
+        reviewRepository.save(review);
+
+        float total = product.getAvgRating() * product.getReviewCnt();
+        float updatedAvgRating = total / product.getReviewCnt();
+
+        product.setAvgRating(updatedAvgRating);
+        productRepository.save(product);
+
+        return CUDReviewResponseDTO.builder()
+            .result("수정이 완료됐습니다.")
             .build();
     }
 }

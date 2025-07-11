@@ -44,6 +44,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers("/api/review")
                     .permitAll()
+                    .requestMatchers("/api/**")
+                    .permitAll()
                     .anyRequest()
                     .authenticated())
         .addFilterBefore(

@@ -5,7 +5,7 @@ import com.pinkcat.quickreservemvp.common.model.BaseResponse;
 import com.pinkcat.quickreservemvp.common.security.principal.UserPrincipal;
 import com.pinkcat.quickreservemvp.product.dto.AddWishResponseDTO;
 import com.pinkcat.quickreservemvp.product.dto.ProductInfoResponseDTO;
-import com.pinkcat.quickreservemvp.product.dto.ProductReviewResponseDTO;
+import com.pinkcat.quickreservemvp.product.dto.ProductReviewListResponseDTO;
 import com.pinkcat.quickreservemvp.product.dto.AddCartRequestDTO;
 import com.pinkcat.quickreservemvp.product.dto.AddCartResponseDTO;
 import com.pinkcat.quickreservemvp.product.service.ProductService;
@@ -32,7 +32,7 @@ public class ProductController {
 
     @GetMapping("/{productId}/reviews")
     @ResponseBody
-    public BaseResponse<ProductReviewResponseDTO> getProductInfo(
+    public BaseResponse<ProductReviewListResponseDTO> getProductInfo(
             @PathVariable Long productId,
             @RequestParam(value = "page") int page,
             @RequestParam(value = "size") int size,

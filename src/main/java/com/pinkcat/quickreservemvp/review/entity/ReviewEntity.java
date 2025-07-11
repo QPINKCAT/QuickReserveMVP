@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.Comment;
 
 @Entity
@@ -18,10 +19,12 @@ import org.hibernate.annotations.Comment;
 @NoArgsConstructor
 @AttributeOverride(name = "pk", column = @Column(name = "customer_product_review_pk"))
 public class ReviewEntity extends BaseEntity {
+    @Setter
     @Comment("평점, min : 1, max : 10")
     @Column(name = "customer_product_review_rating", nullable = false)
     private Integer rating;
 
+    @Setter
     @Comment("리뷰")
     @Column(name = "customer_product_review_comment")
     private String comment;

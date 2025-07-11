@@ -42,7 +42,7 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers("/api/wish/**")
                     .permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/reviews")
+                    .requestMatchers("/api/review")
                     .permitAll()
                     .anyRequest()
                     .authenticated())

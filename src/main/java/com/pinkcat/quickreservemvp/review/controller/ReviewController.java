@@ -10,6 +10,7 @@ import com.pinkcat.quickreservemvp.review.service.ReviewService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,18 +35,26 @@ public class ReviewController {
     @PostMapping("")
     @ResponseBody
     public BaseResponse<CUDReviewResponseDTO> addReview(
-//        @AuthenticationPrincipal UserPrincipal user,
+        @AuthenticationPrincipal UserPrincipal user,
         @RequestParam(value = "orderItem") Long orderItemId,
         @RequestBody WriteReviewRequestDTO request){
-        return new BaseResponse<>(reviewService.addReview(1L, orderItemId, request));
+        return new BaseResponse<>(reviewService.addReview(user.getUserPk(), orderItemId, request));
     }
 
     @PatchMapping("")
     @ResponseBody
     public BaseResponse<CUDReviewResponseDTO> updateReview(
-        // @AuthenticationPrincipal UserPrincipal user,
+        @AuthenticationPrincipal UserPrincipal user,
         @RequestParam(value = "review") Long reviewId,
         @RequestBody UpdateReviewRequestDTO request){
-        return new BaseResponse<>(reviewService.updateReview(1L, reviewId, request));
+        return new BaseResponse<>(reviewService.updateReview(user.getUserPk(), reviewId, request));
+    }
+
+    @DeleteMapping("")
+    @ResponseBody
+    public BaseResponse<CUDReviewResponseDTO> updateReview(
+        @AuthenticationPrincipal UserPrincipal user,
+        @RequestParam(value = "review") Long reviewId){
+        return new BaseResponse<>(reviewService.deleteReview(user.getUserPk(), reviewId));
     }
 }

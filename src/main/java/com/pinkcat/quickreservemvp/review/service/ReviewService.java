@@ -9,5 +9,7 @@ public interface ReviewService {
     ReviewResponseDTO getReview(Long reviewId);
     CUDReviewResponseDTO addReview(Long userPk, Long orderItemId, WriteReviewRequestDTO request);
     CUDReviewResponseDTO updateReview(Long userPk, Long reviewId, UpdateReviewRequestDTO request);
+    CUDReviewResponseDTO deleteReview(Long userPk, Long reviewId);
+
 
 }

@@ -18,6 +18,7 @@ import com.pinkcat.quickreservemvp.review.entity.ReviewEntity;
 import com.pinkcat.quickreservemvp.review.repository.ReviewRepository;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -109,8 +110,12 @@ public class ReviewServiceImpl implements ReviewService{
     @Override
     @Transactional
     public CUDReviewResponseDTO updateReview(Long userPk, Long reviewId, UpdateReviewRequestDTO request){
-        customerRepository.findByPkAndActiveTrue(userPk).orElseThrow(() ->
+        CustomerEntity customer =  customerRepository.findByPkAndActiveTrue(userPk).orElseThrow(() ->
             new PinkCatException("비활성화된 계정입니다. 관리자에게 문의해주세요.", ErrorMessageCode.CUSTOMER_INACTIVE));
+
+        if (!Objects.equals(customer.getPk(), userPk)) {
+            throw new PinkCatException("본인이 작성한 리뷰가 아닙니다.", ErrorMessageCode.INVALID_USER);
+        }
 
         ReviewEntity review = reviewRepository.findByPk(reviewId).orElseThrow(() ->
             new PinkCatException("존재하지 않는 리뷰입니다.", ErrorMessageCode.NO_SUCH_REVIEW));
@@ -139,6 +144,26 @@ public class ReviewServiceImpl implements ReviewService{
 
         return CUDReviewResponseDTO.builder()
             .result("수정이 완료됐습니다.")
+            .build();
+    }
+
+    @Override
+    @Transactional
+    public CUDReviewResponseDTO deleteReview(Long userPk, Long reviewId){
+        CustomerEntity customer =  customerRepository.findByPkAndActiveTrue(userPk).orElseThrow(() ->
+            new PinkCatException("비활성화된 계정입니다. 관리자에게 문의해주세요.", ErrorMessageCode.CUSTOMER_INACTIVE));
+
+        ReviewEntity review = reviewRepository.findByPk(reviewId).orElseThrow(() ->
+            new PinkCatException("존재하지 않는 리뷰입니다.", ErrorMessageCode.NO_SUCH_REVIEW));
+
+        if (!Objects.equals(customer.getPk(), userPk)) {
+            throw new PinkCatException("본인이 작성한 리뷰가 아닙니다.", ErrorMessageCode.INVALID_USER);
+        }
+
+        reviewRepository.delete(review);
+
+        return CUDReviewResponseDTO.builder()
+            .result("삭제가 완료됐습니다.")
             .build();
     }
 }

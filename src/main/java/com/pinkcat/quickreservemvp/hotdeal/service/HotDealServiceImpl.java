@@ -49,4 +49,9 @@ public class HotDealServiceImpl implements HotDealService{
             .hotDealList(hotDealList)
             .build();
     }
+
+
+    /*
+    삭제된 핫딜 && hot_deal end_at < today && public_status ≠ all 인 경우 조회되지 않는다.
+     */
 }

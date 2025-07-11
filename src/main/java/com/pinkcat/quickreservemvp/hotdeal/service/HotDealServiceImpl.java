@@ -4,6 +4,7 @@ import com.pinkcat.quickreservemvp.common.enums.SortEnum;
 import com.pinkcat.quickreservemvp.common.enums.SortPivotEnum;
 import com.pinkcat.quickreservemvp.hotdeal.dto.HotDealListResponseDTO;
 import com.pinkcat.quickreservemvp.hotdeal.dto.HotDealListResponseDTO.HotDeal;
+import com.pinkcat.quickreservemvp.hotdeal.dto.HotDealResponseDTO;
 import com.pinkcat.quickreservemvp.hotdeal.entity.HotDealEntity;
 import com.pinkcat.quickreservemvp.hotdeal.repository.HotDealRepository;
 import java.util.List;
@@ -54,4 +55,9 @@ public class HotDealServiceImpl implements HotDealService{
     /*
     삭제된 핫딜 && hot_deal end_at < today && public_status ≠ all 인 경우 조회되지 않는다.
      */
+    @Override
+    public HotDealResponseDTO getHotDealDetail(Long hotDealPk){
+        return HotDealResponseDTO.builder()
+            .build();
+    }
 }

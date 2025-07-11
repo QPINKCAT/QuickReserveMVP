@@ -4,6 +4,7 @@ import com.pinkcat.quickreservemvp.common.enums.SortEnum;
 import com.pinkcat.quickreservemvp.common.enums.SortPivotEnum;
 import com.pinkcat.quickreservemvp.common.model.BaseResponse;
 import com.pinkcat.quickreservemvp.hotdeal.dto.HotDealListResponseDTO;
+import com.pinkcat.quickreservemvp.hotdeal.dto.HotDealResponseDTO;
 import com.pinkcat.quickreservemvp.hotdeal.service.HotDealService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -26,5 +27,12 @@ public class HotDealController {
         @RequestParam(value = "sortPivot", required = false) SortPivotEnum sortPivot,
         @RequestParam(value = "sort", required = false) SortEnum sort){
         return new BaseResponse<>(hotDealService.getHotDealList(page, size, sortPivot, sort));
+    }
+
+    @GetMapping("")
+    @ResponseBody
+    public BaseResponse<HotDealResponseDTO> getHotDealDetail(
+        @RequestParam(value = "hotDeal") Long hotDealId){
+        return new BaseResponse<>(hotDealService.getHotDealDetail(hotDealId));
     }
 }

@@ -70,9 +70,9 @@ public class HotDealResponseDTO {
         @NotNull
         private Integer stock;
 
-        private String salePercent;
+        private Integer discountPrice;
 
-        private Integer salePrice;
+        private String discountPercent;
 
         private LocalDateTime saleStartAt;
 

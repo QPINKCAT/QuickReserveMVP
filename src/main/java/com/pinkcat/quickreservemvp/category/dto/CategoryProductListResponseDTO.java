@@ -43,6 +43,10 @@ public class CategoryProductListResponseDTO {
         @NotNull
         private Integer price;
 
+        private Integer discountPrice;
+
+        private String discountRate;
+
         @NotNull
         private String avgRating;
 

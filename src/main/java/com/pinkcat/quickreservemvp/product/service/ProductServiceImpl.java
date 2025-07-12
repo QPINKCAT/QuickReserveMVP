@@ -28,6 +28,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -74,9 +76,11 @@ public class ProductServiceImpl  implements ProductService {
         int price = product.getPrice();
 
         // 할인 정보 찾기
-        Integer salePrice = discountRepository.findSalePriceByProduct(product).orElse(null);
-        float salePercent = salePrice != null ? (float) (price - salePrice) / price : 0f;
-        String discountRate = String.format("%.2f", salePercent * 100);
+        Integer discountPrice = discountRepository.findValidDiscountPriceByProduct(product,
+                (LocalDateTime.now(ZoneId.of("Asia/Seoul")))).orElse(null);
+
+        float discountRate = discountPrice != null ? (float) (product.getPrice() - discountPrice) / product.getPrice() : 0f;
+        String discountRateString = String.format("%.2f", discountRate * 100);
 
         // 리뷰 개수 찾기
         Integer reviewCnt = reviewRepository.countReviewsByProductPk(productId);
@@ -94,8 +98,8 @@ public class ProductServiceImpl  implements ProductService {
                 .name(product.getProductName())
                 .price(price)
                 .avgRating(product.getAvgRating().toString())
-                .discountRate(discountRate)
-                .finalPrice(salePrice)
+                .discountRate(discountRateString)
+                .discountPrice(discountPrice)
                 .avgRating(product.getAvgRating().toString())
                 .reviewCount(reviewCnt)
                 .images(images)

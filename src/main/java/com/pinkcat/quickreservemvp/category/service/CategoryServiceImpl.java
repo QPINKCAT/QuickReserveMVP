@@ -11,11 +11,11 @@ import com.pinkcat.quickreservemvp.category.repository.CategoryProductRepository
 import com.pinkcat.quickreservemvp.category.repository.CategoryRepository;
 import com.pinkcat.quickreservemvp.common.exceptions.ErrorMessageCode;
 import com.pinkcat.quickreservemvp.common.exceptions.PinkCatException;
-import com.pinkcat.quickreservemvp.product.entity.DiscountEntity;
 import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
 import com.pinkcat.quickreservemvp.product.repository.DiscountRepository;
 import com.pinkcat.quickreservemvp.product.repository.ProductImageRepository;
 import com.pinkcat.quickreservemvp.product.repository.ProductRepository;
+
 import java.time.ZoneId;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -82,9 +82,10 @@ public class CategoryServiceImpl implements CategoryService{
 
                 // 할인 정보 불러오기
                 int price = product.getPrice();
-                DiscountEntity discount = discountRepository.findByProduct(product).orElse(null);
-                // 할인이 적용된 상품이고, 할인 기간 중에 있다면 할인 가격으로 가격 정보 업데이트
-                if (discount != null && isApplicable(discount.getStartAt(), discount.getEndAt())) price = discount.getDiscountPrice();
+                Integer discountPrice = discountRepository.findValidDiscountPriceByProduct(product,
+                        LocalDateTime.now(ZoneId.of("Asia/Seoul"))).orElse(null);
+                float discountRate = discountPrice != null ? (float) (product.getPrice() - discountPrice) / product.getPrice() : 0f;
+                String discountRateString = String.format("%.2f", discountRate * 100);
 
                 // 썸네일 정보 불러오기
                 String thumbnail = productImageRepository.findThumbnailByProductPk(product.getPk()).orElse(null);
@@ -93,6 +94,8 @@ public class CategoryServiceImpl implements CategoryService{
                                 .productId(product.getPk())
                                 .thumbnail(thumbnail)
                                 .price(price)
+                                .discountPrice(discountPrice)
+                                .discountRate(discountRateString)
                                 .avgRating(String.valueOf(product.getAvgRating()))
                                 .saleStartAt(product.getSaleStartAt())
                                 .saleEndAt(product.getSaleEndAt())
@@ -111,10 +114,5 @@ public class CategoryServiceImpl implements CategoryService{
                 .size(size)
                 .products(products)
                 .build();
-    }
-
-    private boolean isApplicable(LocalDateTime startAt, LocalDateTime endAt) {
-        LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        return now.isAfter(startAt) && now.isBefore(endAt);
     }
 }

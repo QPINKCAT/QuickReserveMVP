@@ -36,7 +36,7 @@ public class ProductInfoResponseDTO {
     private String discountRate;
 
     @Min(0)
-    private Integer finalPrice;
+    private Integer discountPrice;
 
     @NotNull
     private String avgRating;

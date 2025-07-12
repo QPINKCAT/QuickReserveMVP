@@ -2,7 +2,7 @@ package com.pinkcat.quickreservemvp.payment.entity;
 
 import com.pinkcat.quickreservemvp.common.enums.PaymentStatusEnum;
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
-import com.pinkcat.quickreservemvp.order.entity.OrderItemEntity;
+import com.pinkcat.quickreservemvp.order.entity.OrderEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +29,7 @@ public class PaymentEntity extends BaseEntity {
 
     @Comment("유저")
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_order_item_pk", nullable = false, updatable = false)
-    private OrderItemEntity orderItem;
+    @JoinColumn(name = "product_order_pk", nullable = false, updatable = false)
+    private OrderEntity order;
 
 }

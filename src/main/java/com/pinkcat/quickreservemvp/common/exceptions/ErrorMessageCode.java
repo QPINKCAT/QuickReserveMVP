@@ -17,6 +17,9 @@ public enum ErrorMessageCode {
   NO_SUCH_PRODUCT(40301, "존재하지 않는 상품입니다."),
   NO_SUCH_CATEGORY(40302, "존재하지 않는 카테고리입니다."),
   NO_SUCH_CATEGORY_PRODUCT(40303, "카테고리가 존재하지 않는 상품입니다."),
+  PRODUCT_UNAVAILABLE(40404, "현재 구매가 불가능한 상품입니다."),
+  OUT_OF_STOCK(40405, "재고가 부족합니다."),
+
 
   // Order : 40400 ~ 40499
   NO_SUCH_ORDER_ITEM(40401, "존재하지 않는 주문 상품입니다."),
@@ -32,6 +35,9 @@ public enum ErrorMessageCode {
   // Cart : 40700 ~ 40799
   NO_SUCH_CART_ITEM(40701, "존재하지 않는 장바구니 상품입니다."),
   INVALID_QUANTITY(40702, "장바구니 상품의 최소 수량은 1개입니다.");
+
+  // Payment : 40800 ~ 40899
+
 
   private final int codeValue;
   private final String message;

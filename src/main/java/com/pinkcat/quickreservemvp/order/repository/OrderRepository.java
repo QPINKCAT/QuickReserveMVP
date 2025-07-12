@@ -5,4 +5,5 @@ import com.pinkcat.quickreservemvp.order.entity.OrderEntity;
 
 public interface OrderRepository extends ActiveRepository<OrderEntity, Long> {
 
+    boolean existsByOrderNum(String string);
 }

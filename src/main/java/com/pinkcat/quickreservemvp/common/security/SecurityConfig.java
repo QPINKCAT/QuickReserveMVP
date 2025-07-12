@@ -48,6 +48,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers("/api/cart/**")
                     .permitAll()
+                    .requestMatchers("/api/payment/**")
+                    .permitAll()
                     .anyRequest()
                     .authenticated())
         .addFilterBefore(

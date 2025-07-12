@@ -22,7 +22,7 @@ public class OrderEntity extends BaseEntity {
     private String orderNum;
 
     @Comment("고객")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "customer_pk", nullable = false, updatable = false)
     private CustomerEntity customer;
 }

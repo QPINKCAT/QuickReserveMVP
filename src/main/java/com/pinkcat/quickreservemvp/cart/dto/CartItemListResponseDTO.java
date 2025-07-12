@@ -46,7 +46,5 @@ public class CartItemListResponseDTO {
         @NotNull
         @Min(0)
         private Integer quantity;
-
-
     }
 }

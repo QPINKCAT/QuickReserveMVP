@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
@@ -18,6 +19,7 @@ import org.hibernate.annotations.Comment;
 @NoArgsConstructor
 @AttributeOverride(name = "pk", column = @Column(name = "cart_item_pk"))
 public class CartEntity extends BaseEntity {
+    @Setter
     @Comment("수량")
     @Column(name = "cart_item_quantity", nullable = false)
     private Integer quantity;

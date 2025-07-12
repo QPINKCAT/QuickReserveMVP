@@ -2,6 +2,8 @@ package com.pinkcat.quickreservemvp.cart.service;
 
 import com.pinkcat.quickreservemvp.cart.dto.CartItemListResponseDTO;
 import com.pinkcat.quickreservemvp.cart.dto.CartItemListResponseDTO.Item;
+import com.pinkcat.quickreservemvp.cart.dto.DeleteCartItemRequestDTO;
+import com.pinkcat.quickreservemvp.cart.dto.UpdateCartItemRequestDTO;
 import com.pinkcat.quickreservemvp.cart.entity.CartEntity;
 import com.pinkcat.quickreservemvp.cart.repository.CartRepository;
 import com.pinkcat.quickreservemvp.common.enums.ProductStatusEnum;
@@ -36,7 +38,6 @@ public class CartServiceImpl implements CartService{
 
     @Transactional
     public AddCartResponseDTO addCart(Long userPk, Long productId, AddCartRequestDTO request){
-
         CustomerEntity customer = customerRepository.findByPkAndActiveTrue(userPk).orElseThrow(() ->
             new PinkCatException("비활성화된 계정입니다. 관리자에게 문의해주세요.", ErrorMessageCode.CUSTOMER_INACTIVE));
 
@@ -101,5 +102,35 @@ public class CartServiceImpl implements CartService{
         return CartItemListResponseDTO.builder()
                 .items(items)
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public Boolean updateCart(Long userPk, UpdateCartItemRequestDTO request){
+        // [1] 로그인하지 않은 유저가 수정 시 프론트 캐시에서 수정을 진행한다
+        if (userPk == null) return false;
+
+        // [2] 로그인한 유저가 삭제 시 수량을 수정한다
+        CartEntity cart = cartRepository.findCartEntityByPk(request.getCartItemId()).orElseThrow(()->
+                new PinkCatException("존재하지 않는 장바구니 상품입니다.", ErrorMessageCode.NO_SUCH_CART_ITEM));
+
+        if (request.getQuantity() <= 0) throw new PinkCatException("장바구니 상품의 최소 수량은 1개입니다.", ErrorMessageCode.NO_SUCH_CATEGORY);
+        cart.setQuantity(request.getQuantity());
+        cartRepository.save(cart);
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public Boolean deleteCart(Long userPk, DeleteCartItemRequestDTO request){
+        // [1] 로그인하지 않은 유저가 삭제 시 프론트 캐시에서 삭제를 진행한다
+        if (userPk == null) return false;
+
+        // [2] 로그인한 유저가 삭제 시 DB 삭제를 진행한다.
+        CartEntity cart = cartRepository.findCartEntityByPk(request.getCartItemId()).orElseThrow(()->
+                new PinkCatException("존재하지 않는 장바구니 상품입니다.", ErrorMessageCode.NO_SUCH_CART_ITEM));
+
+        cartRepository.delete(cart);
+        return true;
     }
 }

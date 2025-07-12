@@ -17,4 +17,6 @@ public interface CartRepository extends ActiveRepository<CartEntity, Long> {
             "from CartEntity c " +
             "order by c.createdAt desc")
     List<CartEntity> findCartEntitiesByCustomerPk(Long customerPk);
+
+    Optional<CartEntity> findCartEntityByPk(Long cartPk);
 }

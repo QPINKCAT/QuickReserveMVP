@@ -12,7 +12,6 @@ import com.pinkcat.quickreservemvp.product.dto.ProductInfoResponseDTO.Category;
 import com.pinkcat.quickreservemvp.product.dto.ProductInfoResponseDTO.Image;
 import com.pinkcat.quickreservemvp.product.dto.ProductReviewListResponseDTO;
 import com.pinkcat.quickreservemvp.product.dto.ProductReviewListResponseDTO.Review;
-import com.pinkcat.quickreservemvp.product.entity.DiscountEntity;
 import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
 import com.pinkcat.quickreservemvp.product.repository.DiscountRepository;
 import com.pinkcat.quickreservemvp.product.repository.ProductImageRepository;
@@ -37,7 +36,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ProductServiceImpl implements ProductService {
+public class ProductServiceImpl  implements ProductService {
 
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
@@ -75,10 +74,9 @@ public class ProductServiceImpl implements ProductService {
         int price = product.getPrice();
 
         // 할인 정보 찾기
-        DiscountEntity discount = discountRepository.findByProduct(product).orElse(null);
-        float rate = discount == null ? 0 : (float) (price - discount.getDiscountPrice()) / price;
-        int finalPrice = discount == null ? product.getPrice() : discount.getDiscountPrice();
-        String discountRate = rate == 0 ? "0" : String.valueOf(rate);
+        Integer salePrice = discountRepository.findSalePriceByProduct(product).orElse(null);
+        float salePercent = salePrice != null ? (float) (price - salePrice) / price : 0f;
+        String discountRate = String.format("%.2f", salePercent * 100);
 
         // 리뷰 개수 찾기
         Integer reviewCnt = reviewRepository.countReviewsByProductPk(productId);
@@ -97,7 +95,7 @@ public class ProductServiceImpl implements ProductService {
                 .price(price)
                 .avgRating(product.getAvgRating().toString())
                 .discountRate(discountRate)
-                .finalPrice(finalPrice)
+                .finalPrice(salePrice)
                 .avgRating(product.getAvgRating().toString())
                 .reviewCount(reviewCnt)
                 .images(images)

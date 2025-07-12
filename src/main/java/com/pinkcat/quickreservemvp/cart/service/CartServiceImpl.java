@@ -1,5 +1,7 @@
 package com.pinkcat.quickreservemvp.cart.service;
 
+import com.pinkcat.quickreservemvp.cart.dto.CartItemListResponseDTO;
+import com.pinkcat.quickreservemvp.cart.dto.CartItemListResponseDTO.Item;
 import com.pinkcat.quickreservemvp.cart.entity.CartEntity;
 import com.pinkcat.quickreservemvp.cart.repository.CartRepository;
 import com.pinkcat.quickreservemvp.common.enums.ProductStatusEnum;
@@ -10,10 +12,16 @@ import com.pinkcat.quickreservemvp.customer.repository.CustomerRepository;
 import com.pinkcat.quickreservemvp.product.dto.AddCartRequestDTO;
 import com.pinkcat.quickreservemvp.product.dto.AddCartResponseDTO;
 import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
+import com.pinkcat.quickreservemvp.product.repository.DiscountRepository;
+import com.pinkcat.quickreservemvp.product.repository.ProductImageRepository;
 import com.pinkcat.quickreservemvp.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +31,8 @@ public class CartServiceImpl implements CartService{
     private final CustomerRepository customerRepository;
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
+    private final ProductImageRepository productImageRepository;
+    private final DiscountRepository discountRepository;
 
     @Transactional
     public AddCartResponseDTO addCart(Long userPk, Long productId, AddCartRequestDTO request){
@@ -56,5 +66,40 @@ public class CartServiceImpl implements CartService{
         return AddCartResponseDTO.builder()
             .result("장바구니에 상품을 추가했습니다.")
             .build();
+    }
+
+    @Override
+    public CartItemListResponseDTO getCart(Long userPk) {
+
+        // [1] 로그인하지 않은 유저가 조회 시 프론트 캐시를 꺼내온다
+        if (userPk == null){
+            return CartItemListResponseDTO.builder()
+                .build();
+        }
+
+        // [2] 로그인 한 유저가 조회할 경우
+        List<Item> items = cartRepository.findCartEntitiesByCustomerPk(userPk).stream().map(c -> {
+            ProductEntity product = c.getProduct();
+            Integer discountPrice = discountRepository.findValidDiscountPriceByProduct(product,
+                    LocalDateTime.now(ZoneId.of("Asia/Seoul"))).orElse(null);
+            float discountRate = discountPrice != null ? (float) (product.getPrice() - discountPrice) / product.getPrice() : 0f;
+            String discountRateString = String.format("%.2f", discountRate * 100);
+            String thumbnail = productImageRepository.findThumbnailByProductPk(product.getPk()).orElse(null);
+            return Item.builder()
+                    .cartItemId(c.getPk())
+                    .productId(product.getPk())
+                    .name(product.getProductName())
+                    .thumbnail(thumbnail)
+                    .unitPrice(product.getPrice())
+                    .discountPrice(discountPrice)
+                    .discountRate(discountRateString)
+                    .quantity(c.getQuantity())
+                    .build();
+        }).toList();
+
+
+        return CartItemListResponseDTO.builder()
+                .items(items)
+                .build();
     }
 }

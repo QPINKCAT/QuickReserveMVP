@@ -23,7 +23,11 @@ public enum ErrorMessageCode {
 
   // Review : 40500 ~ 40599
   NO_SUCH_REVIEW(40501, "존재하지 않는 리뷰입니다."),
-  INVALID_USER(40502, "본인이 작성한 리뷰가 아닙니다.");
+  INVALID_USER(40502, "본인이 작성한 리뷰가 아닙니다."),
+
+  // HotDeal : 40600 ~ 40699
+  NO_SUCH_HOT_DEAL(40601, "존재하지 않는 핫딜입니다."),
+  INVALID_HOT_DEAL(40601, "유효하지 않은 핫딜입니다.");
 
   private final int codeValue;
   private final String message;

@@ -29,10 +29,12 @@ public class HotDealController {
         return new BaseResponse<>(hotDealService.getHotDealList(page, size, sortPivot, sort));
     }
 
-    @GetMapping("")
+    @GetMapping("/products")
     @ResponseBody
     public BaseResponse<HotDealResponseDTO> getHotDealDetail(
-        @RequestParam(value = "hotDeal") Long hotDealId){
-        return new BaseResponse<>(hotDealService.getHotDealDetail(hotDealId));
+        @RequestParam(value = "page") Integer page,
+        @RequestParam(value = "size") Integer size,
+        @RequestParam(value = "hotdeal") Long hotDealId){
+        return new BaseResponse<>(hotDealService.getHotDealDetail(page, size, hotDealId));
     }
 }

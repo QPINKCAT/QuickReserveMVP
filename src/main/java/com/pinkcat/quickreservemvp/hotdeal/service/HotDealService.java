@@ -7,5 +7,5 @@ import com.pinkcat.quickreservemvp.hotdeal.dto.HotDealResponseDTO;
 
 public interface HotDealService {
     HotDealListResponseDTO getHotDealList(Integer page, Integer size, SortPivotEnum sortPivot, SortEnum sort);
-    HotDealResponseDTO getHotDealDetail(Long hotDealPk);
+    HotDealResponseDTO getHotDealDetail(Integer page, Integer size, Long hotDealPk);
 }

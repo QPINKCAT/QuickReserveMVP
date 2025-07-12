@@ -1,6 +1,7 @@
 package com.pinkcat.quickreservemvp.hotdeal.dto;
 
 import com.pinkcat.quickreservemvp.common.enums.ProductStatusEnum;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,6 +17,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class HotDealResponseDTO {
+    @NotNull
+    @Min(1)
+    private Integer page;
+
+    @NotNull
+    @Min(1)
+    private Integer totalPages;
+
+    @NotNull
+    @Min(1)
+    private Integer size;
+
+
     @NotNull
     private Long hotDealId;
 
@@ -56,7 +70,7 @@ public class HotDealResponseDTO {
         @NotNull
         private Integer stock;
 
-        private Integer salePercent;
+        private String salePercent;
 
         private Integer salePrice;
 

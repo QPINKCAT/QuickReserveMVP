@@ -85,11 +85,11 @@ public class HotDealServiceImpl implements HotDealService{
         List<Product> products = productList.stream()
             .map(p -> {
                 ProductEntity product = p.getProduct();
-
-                Integer salePrice = discountRepository.findSalePriceByProduct(product).orElse(null);
-                float salePercent = salePrice != null ? (float) (product.getPrice() - salePrice) / product.getPrice() : 0f;
+                Integer discountPrice = discountRepository.findValidDiscountPriceByProduct(product,
+                        LocalDateTime.now(ZoneId.of("Asia/Seoul"))).orElse(null);
+                float discountRate = discountPrice != null ? (float) (product.getPrice() - discountPrice) / product.getPrice() : 0f;
+                String discountRateString = String.format("%.2f", discountRate * 100);
                 String thumbnail = productImageRepository.findThumbnailByProductPk(product.getPk()).orElse(null);
-                String salePercentString = String.format("%.2f", salePercent * 100);
 
                 return Product.builder()
                     .productId(product.getPk())
@@ -98,8 +98,8 @@ public class HotDealServiceImpl implements HotDealService{
                     .price(product.getPrice())
                     .status(product.getProductStatus())
                     .stock(product.getStock())
-                    .salePercent(salePercentString)
-                    .salePrice(salePrice)
+                    .discountPrice(discountPrice)
+                    .discountPercent(discountRateString)
                     .saleStartAt(product.getSaleStartAt())
                     .saleEndAt(product.getSaleEndAt())
                     .build();

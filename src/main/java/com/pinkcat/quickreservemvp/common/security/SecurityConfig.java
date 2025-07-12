@@ -46,6 +46,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers("/api/hotdeals/**")
                     .permitAll()
+                    .requestMatchers("/api/cart/**")
+                    .permitAll()
                     .anyRequest()
                     .authenticated())
         .addFilterBefore(

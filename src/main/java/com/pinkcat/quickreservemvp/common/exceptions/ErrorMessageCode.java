@@ -27,7 +27,11 @@ public enum ErrorMessageCode {
 
   // HotDeal : 40600 ~ 40699
   NO_SUCH_HOT_DEAL(40601, "존재하지 않는 핫딜입니다."),
-  INVALID_HOT_DEAL(40601, "유효하지 않은 핫딜입니다.");
+  INVALID_HOT_DEAL(40601, "유효하지 않은 핫딜입니다."),
+
+  // Cart : 40700 ~ 40799
+  NO_SUCH_CART_ITEM(40701, "존재하지 않는 장바구니 상품입니다."),
+  INVALID_QUANTITY(40702, "장바구니 상품의 최소 수량은 1개입니다.");
 
   private final int codeValue;
   private final String message;

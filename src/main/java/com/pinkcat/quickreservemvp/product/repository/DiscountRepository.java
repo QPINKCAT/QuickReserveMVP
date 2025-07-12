@@ -6,6 +6,7 @@ import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface DiscountRepository extends ActiveRepository<DiscountEntity, Long> {
@@ -13,6 +14,8 @@ public interface DiscountRepository extends ActiveRepository<DiscountEntity, Lon
 
     @Query("select d.discountPrice " +
             "from DiscountEntity d " +
-            "where d.product = :product")
-    Optional<Integer> findSalePriceByProduct(@Param("product") ProductEntity product);
+            "where d.product = :product " +
+            "and d.startAt <= :now " +
+            "and d.endAt > :now ")
+    Optional<Integer> findValidDiscountPriceByProduct(@Param("product") ProductEntity product, @Param("now") LocalDateTime now);
 }

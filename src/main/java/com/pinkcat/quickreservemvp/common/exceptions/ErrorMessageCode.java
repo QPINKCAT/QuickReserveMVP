@@ -21,8 +21,9 @@ public enum ErrorMessageCode {
   OUT_OF_STOCK(40405, "재고가 부족합니다."),
 
 
-  // Order : 40400 ~ 40499
-  NO_SUCH_ORDER_ITEM(40401, "존재하지 않는 주문 상품입니다."),
+  // Order & OrderItem : 40400 ~ 40499
+  NO_SUCH_ORDER(40401, "존재하지 않는 주문입니다"),
+  NO_SUCH_ORDER_ITEM(40402, "존재하지 않는 주문 상품입니다."),
 
   // Review : 40500 ~ 40599
   NO_SUCH_REVIEW(40501, "존재하지 않는 리뷰입니다."),

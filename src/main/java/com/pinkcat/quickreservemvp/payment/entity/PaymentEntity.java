@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
@@ -18,11 +19,13 @@ import org.hibernate.annotations.Comment;
 @NoArgsConstructor
 @AttributeOverride(name = "pk", column = @Column(name = "payment_pk"))
 public class PaymentEntity extends BaseEntity {
+    @Setter
     @Enumerated(EnumType.STRING)
     @Comment("결제상태")
     @Column(name = "payment_status")
     private PaymentStatusEnum status;
 
+    @Setter
     @Comment("총결제금액")
     @Column(name = "payment_total_price")
     private Integer totalPrice;

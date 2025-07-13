@@ -50,6 +50,8 @@ public class SecurityConfig {
                     .permitAll()
                     .requestMatchers("/api/payment/**")
                     .permitAll()
+                    .requestMatchers("/api/orders/**")
+                    .permitAll()
                     .anyRequest()
                     .authenticated())
         .addFilterBefore(

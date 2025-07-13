@@ -50,6 +50,15 @@ public class CartServiceImpl implements CartService{
                 .build();
         }
 
+        CartEntity cart = cartRepository.findCartEntityByCustomerAndProduct(customer, product).orElse(null);
+        if (cart != null){
+            cart.setQuantity(cart.getQuantity() + request.getQuantity());
+            cartRepository.save(cart);
+            return AddCartResponseDTO.builder()
+                    .result("상품 수량이 수정되었습니다.")
+                    .build();
+        }
+
         cartRepository.save(
             CartEntity.builder()
                 .customer(customer)
@@ -57,12 +66,6 @@ public class CartServiceImpl implements CartService{
                 .quantity(request.getQuantity())
                 .build()
         );
-
-        if (cartRepository.findCartEntityByCustomerAndProduct(customer, product).isPresent()){
-            return AddCartResponseDTO.builder()
-                .result("상품 수량이 수정되었습니다.")
-                .build();
-        }
 
         return AddCartResponseDTO.builder()
             .result("장바구니에 상품을 추가했습니다.")

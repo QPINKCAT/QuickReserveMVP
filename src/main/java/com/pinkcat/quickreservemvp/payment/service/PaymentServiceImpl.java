@@ -40,7 +40,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     @Override
     @Transactional
-    public String payment(Long userId, Long orderId, PaymentRequestDTO request) {
+    public String payment(Long userId, PaymentRequestDTO request) {
         CustomerEntity customer = customerRepository.findByPkAndActiveTrue(userId).orElseThrow(() ->
                 new PinkCatException("비활성화된 계정입니다. 관리자에게 문의해주세요.", ErrorMessageCode.CUSTOMER_INACTIVE));
 

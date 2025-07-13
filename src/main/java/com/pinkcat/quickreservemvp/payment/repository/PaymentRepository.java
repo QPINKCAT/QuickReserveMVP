@@ -13,4 +13,10 @@ public interface PaymentRepository extends ActiveRepository<PaymentEntity, Long>
             "join OrderEntity o on p.order = o " +
             "where o.orderNum = :orderNum")
     Optional<PaymentEntity> findByOrderNum(@Param("orderNum") String orderNum);
+
+    @Query("select p " +
+            "from PaymentEntity p " +
+            "join OrderEntity o on p.order = o " +
+            "where o.pk = :orderPk")
+    Optional<PaymentEntity> findByOrderPk(@Param("orderPk") Long orderPk);
 }

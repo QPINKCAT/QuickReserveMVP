@@ -80,7 +80,7 @@ public class PaymentServiceImpl implements PaymentService {
                     .product(product)
                     .originalPrice(product.getPrice())
                     .status(OrderStatusEnum.COMPLETED)
-                    .saledPrice(item.getDiscountPrice())
+                    .salePrice(item.getDiscountPrice())
                     .quantity(item.getQuantity())
                     .build());
 

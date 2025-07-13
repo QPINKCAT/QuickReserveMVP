@@ -4,12 +4,20 @@ import com.pinkcat.quickreservemvp.category.entity.CategoryEntity;
 import com.pinkcat.quickreservemvp.category.repository.CategoryRepository;
 import com.pinkcat.quickreservemvp.common.exceptions.ErrorMessageCode;
 import com.pinkcat.quickreservemvp.common.exceptions.PinkCatException;
+import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
 import com.pinkcat.quickreservemvp.customer.repository.CustomerRepository;
 import com.pinkcat.quickreservemvp.order.dto.OrderListResponseDTO;
 import com.pinkcat.quickreservemvp.order.dto.OrderListResponseDTO.Order;
 import com.pinkcat.quickreservemvp.order.dto.OrderListResponseDTO.Item;
+import com.pinkcat.quickreservemvp.order.dto.OrderResponseDTO;
+import com.pinkcat.quickreservemvp.order.dto.OrderResponseDTO.Customer;
+import com.pinkcat.quickreservemvp.order.dto.OrderResponseDTO.OrderItem;
+import com.pinkcat.quickreservemvp.order.dto.OrderResponseDTO.Product;
+import com.pinkcat.quickreservemvp.order.dto.OrderResponseDTO.Payment;
+import com.pinkcat.quickreservemvp.order.entity.OrderEntity;
 import com.pinkcat.quickreservemvp.order.repository.OrderCustomRepository;
 import com.pinkcat.quickreservemvp.order.repository.OrderItemRepository;
+import com.pinkcat.quickreservemvp.order.repository.OrderRepository;
 import com.pinkcat.quickreservemvp.payment.entity.PaymentEntity;
 import com.pinkcat.quickreservemvp.payment.repository.PaymentRepository;
 import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
@@ -37,6 +45,7 @@ public class OrderServiceImpl implements OrderService {
     private final CategoryRepository categoryRepository;
     private final PaymentRepository paymentRepository;
     private final ProductImageRepository productImageRepository;
+    private final OrderRepository orderRepository;
 
     @Override
     public OrderListResponseDTO getOrderList(Long userPk, Integer page, Integer size, String start, String end){
@@ -71,7 +80,7 @@ public class OrderServiceImpl implements OrderService {
                         .productName(product.getProductName())
                         .thumbnail(thumbnail)
                         .originalPrice(i.getOriginalPrice())
-                        .discountPrice(i.getSaledPrice())
+                        .discountPrice(i.getSalePrice())
                         .quantity(i.getQuantity())
                         .build();
             }).toList();
@@ -84,6 +93,65 @@ public class OrderServiceImpl implements OrderService {
                 .size(size)
                 .totalPages(orderList.getTotalPages())
                 .orders(orders)
+                .build();
+    }
+
+    @Override
+    public OrderResponseDTO getOrder(Long userPk, Long orderId) {
+
+        // [1] 유효성 검사
+        CustomerEntity customerEntity = customerRepository.findByPkAndActiveTrue(userPk).orElseThrow(() ->
+                new PinkCatException("비활성화된 계정입니다. 관리자에게 문의해주세요.", ErrorMessageCode.CUSTOMER_INACTIVE));
+
+        OrderEntity order = orderRepository.findByOrderPk(orderId).orElseThrow(() ->
+                new PinkCatException("존재하지 않는 주문입니다.", ErrorMessageCode.NO_SUCH_ORDER));
+
+        Customer customer = Customer.builder()
+                .customerId(customerEntity.getId())
+                .name(customerEntity.getName())
+                .phoneNumber(customerEntity.getPhoneNumber())
+                .email(customerEntity.getEmail())
+                .build();
+
+        List<OrderItem> orderItems = orderItemRepository.findAllByOrderPk(orderId).stream().map(oi -> {
+            ProductEntity productEntity = oi.getProduct();
+            Product product = Product.builder()
+                    .productId(productEntity.getPk())
+                    .name(productEntity.getProductName())
+                    .description(productEntity.getProductDescription())
+                    .price(productEntity.getPrice())
+                    .status(productEntity.getProductStatus().name())
+                    .build();
+
+            PaymentEntity paymentEntity = paymentRepository.findByOrderNum(order.getOrderNum()).orElseThrow(() ->
+                    new PinkCatException("결제건이 존재하지 않습니다.", ErrorMessageCode.NO_SUCH_PAYMENT));
+            Payment payment = Payment.builder()
+                    .paymentId(paymentEntity.getPk())
+                    .status(paymentEntity.getStatus().name())
+                    .totalPrice(paymentEntity.getTotalPrice())
+                    .createdAt(paymentEntity.getCreatedAt())
+                    .updatedAt(paymentEntity.getUpdatedAt())
+                    .build();
+
+            return OrderItem.builder()
+                    .orderItemId(oi.getPk())
+                    .sumPrice(oi.getSalePrice() * oi.getQuantity())
+                    .originalPrice(oi.getOriginalPrice())
+                    .salePrice(oi.getSalePrice())
+                    .quantity(oi.getQuantity())
+                    .status(oi.getStatus().name())
+                    .product(product)
+                    .payment(payment)
+                    .build();
+        }).toList();
+
+
+        return OrderResponseDTO.builder()
+                .orderId(orderId)
+                .orderNum(order.getOrderNum())
+                .createdAt(order.getCreatedAt())
+                .customer(customer)
+                .orderItems(orderItems)
                 .build();
     }
 

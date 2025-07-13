@@ -16,4 +16,6 @@ public interface OrderItemRepository extends ActiveRepository<OrderItemEntity, L
             "join OrderEntity o on oi.order = o " +
             "where o.orderNum = :orderNum")
     List<OrderItemEntity> findByOrderNum(@Param("orderNum") String orderNum);
+
+    List<OrderItemEntity> findAllByOrderPk(Long orderPk);
 }

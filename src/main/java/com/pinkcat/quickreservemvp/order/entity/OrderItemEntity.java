@@ -3,7 +3,6 @@ package com.pinkcat.quickreservemvp.order.entity;
 import com.pinkcat.quickreservemvp.common.enums.OrderStatusEnum;
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
 import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
-import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -24,8 +23,8 @@ public class OrderItemEntity extends BaseEntity {
     private Integer originalPrice;
 
     @Comment("할인 가격")
-    @Column(name = "product_order_item_saled_price")
-    private Integer saledPrice;
+    @Column(name = "product_order_item_sale_price")
+    private Integer salePrice;
 
     @Comment("수량")
     @Column(name = "product_order_item_quantity")

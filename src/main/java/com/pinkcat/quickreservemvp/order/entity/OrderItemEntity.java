@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 
@@ -30,6 +31,7 @@ public class OrderItemEntity extends BaseEntity {
     @Column(name = "product_order_item_quantity")
     private Integer quantity;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     @Comment("주문 상태")
     @Column(name = "product_order_item_status", nullable = false)

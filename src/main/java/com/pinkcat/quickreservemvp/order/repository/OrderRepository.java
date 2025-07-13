@@ -13,6 +13,6 @@ public interface OrderRepository extends ActiveRepository<OrderEntity, Long> {
 
     @Query("select o " +
             "from OrderEntity o " +
-            "where o.pk = :orderPk")
-    Optional<OrderEntity> findByOrderPk(@Param("orderPk") Long orderPk);
+            "where o.orderNum = :orderNum")
+    Optional<OrderEntity> findByOrderNum(@Param("orderNum") String orderNum);
 }

@@ -2,10 +2,15 @@ package com.pinkcat.quickreservemvp.order.service;
 
 import com.pinkcat.quickreservemvp.category.entity.CategoryEntity;
 import com.pinkcat.quickreservemvp.category.repository.CategoryRepository;
+import com.pinkcat.quickreservemvp.common.enums.OrderStatusEnum;
+import com.pinkcat.quickreservemvp.common.enums.PaymentStatusEnum;
 import com.pinkcat.quickreservemvp.common.exceptions.ErrorMessageCode;
 import com.pinkcat.quickreservemvp.common.exceptions.PinkCatException;
 import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
 import com.pinkcat.quickreservemvp.customer.repository.CustomerRepository;
+import com.pinkcat.quickreservemvp.order.dto.CancelOrderRequestDTO;
+import com.pinkcat.quickreservemvp.order.dto.CancelOrderResponseDTO;
+import com.pinkcat.quickreservemvp.order.dto.CancelOrderResponseDTO.Refund;
 import com.pinkcat.quickreservemvp.order.dto.OrderListResponseDTO;
 import com.pinkcat.quickreservemvp.order.dto.OrderListResponseDTO.Order;
 import com.pinkcat.quickreservemvp.order.dto.OrderListResponseDTO.Item;
@@ -15,6 +20,7 @@ import com.pinkcat.quickreservemvp.order.dto.OrderResponseDTO.OrderItem;
 import com.pinkcat.quickreservemvp.order.dto.OrderResponseDTO.Product;
 import com.pinkcat.quickreservemvp.order.dto.OrderResponseDTO.Payment;
 import com.pinkcat.quickreservemvp.order.entity.OrderEntity;
+import com.pinkcat.quickreservemvp.order.entity.OrderItemEntity;
 import com.pinkcat.quickreservemvp.order.repository.OrderCustomRepository;
 import com.pinkcat.quickreservemvp.order.repository.OrderItemRepository;
 import com.pinkcat.quickreservemvp.order.repository.OrderRepository;
@@ -32,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
 @Service
@@ -68,7 +75,7 @@ public class OrderServiceImpl implements OrderService {
                     new PinkCatException("존재하지 않는 주문입니다", ErrorMessageCode.NO_SUCH_ORDER));
 
             o.setPaymentStatus(payment.getStatus());
-            List<Item> items = orderItemRepository.findByOrderNum(o.getOrderNum()).stream().map(i -> {
+            List<Item> items = orderItemRepository.findAllByOrderNum(o.getOrderNum()).stream().map(i -> {
                 ProductEntity product = i.getProduct();
                 CategoryEntity category = categoryRepository.findCategoryEntityByProduct(product).orElseThrow(()->
                         new PinkCatException("존재하지 않는 카테고리입니다.", ErrorMessageCode.NO_SUCH_CATEGORY));
@@ -97,14 +104,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponseDTO getOrder(Long userPk, Long orderId) {
+    public OrderResponseDTO getOrder(Long userPk, String orderNum) {
 
         // [1] 유효성 검사
         CustomerEntity customerEntity = customerRepository.findByPkAndActiveTrue(userPk).orElseThrow(() ->
                 new PinkCatException("비활성화된 계정입니다. 관리자에게 문의해주세요.", ErrorMessageCode.CUSTOMER_INACTIVE));
 
-        OrderEntity order = orderRepository.findByOrderPk(orderId).orElseThrow(() ->
+        OrderEntity order = orderRepository.findByOrderNum(orderNum).orElseThrow(() ->
                 new PinkCatException("존재하지 않는 주문입니다.", ErrorMessageCode.NO_SUCH_ORDER));
+
+        // [2] 주문 상세 내역 조회
 
         Customer customer = Customer.builder()
                 .customerId(customerEntity.getId())
@@ -113,7 +122,7 @@ public class OrderServiceImpl implements OrderService {
                 .email(customerEntity.getEmail())
                 .build();
 
-        List<OrderItem> orderItems = orderItemRepository.findAllByOrderPk(orderId).stream().map(oi -> {
+        List<OrderItem> orderItems = orderItemRepository.findAllByOrderNum(orderNum).stream().map(oi -> {
             ProductEntity productEntity = oi.getProduct();
             Product product = Product.builder()
                     .productId(productEntity.getPk())
@@ -133,9 +142,11 @@ public class OrderServiceImpl implements OrderService {
                     .updatedAt(paymentEntity.getUpdatedAt())
                     .build();
 
+            int sumPrice = oi.getSalePrice() == null ? oi.getOriginalPrice() * oi.getQuantity() : oi.getSalePrice() * oi.getQuantity();
+
             return OrderItem.builder()
                     .orderItemId(oi.getPk())
-                    .sumPrice(oi.getSalePrice() * oi.getQuantity())
+                    .sumPrice(sumPrice)
                     .originalPrice(oi.getOriginalPrice())
                     .salePrice(oi.getSalePrice())
                     .quantity(oi.getQuantity())
@@ -147,11 +158,58 @@ public class OrderServiceImpl implements OrderService {
 
 
         return OrderResponseDTO.builder()
-                .orderId(orderId)
+                .orderId(order.getPk())
                 .orderNum(order.getOrderNum())
                 .createdAt(order.getCreatedAt())
                 .customer(customer)
                 .orderItems(orderItems)
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public CancelOrderResponseDTO cancelOrder(Long userPk, String orderNum, CancelOrderRequestDTO request) {
+
+        // [1] 유효성 검사
+        customerRepository.findByPkAndActiveTrue(userPk).orElseThrow(() ->
+                new PinkCatException("비활성화된 계정입니다. 관리자에게 문의해주세요.", ErrorMessageCode.CUSTOMER_INACTIVE));
+
+        OrderEntity order = orderRepository.findByOrderNum(orderNum).orElseThrow(() ->
+                new PinkCatException("존재하지 않는 주문입니다.", ErrorMessageCode.NO_SUCH_ORDER));
+
+        // [2] 주문 취소
+        AtomicInteger totalRefundedPrice = new AtomicInteger(); // 멀티스레딩 환경에서 race condition 해결을 위해 AtomicInteger 타입으로 지정
+        // 주문아이템 id 유효성 검사
+        List<Refund> refunds = request.getOrderItemIds().stream().map(e -> {
+            OrderItemEntity orderItem = orderItemRepository.findByPk(e).orElseThrow(() ->
+                    new PinkCatException("존재하지 않는 주문 상품입니다.", ErrorMessageCode.NO_SUCH_ORDER_ITEM));
+
+            int refundAmountPerItem = orderItem.getSalePrice() == null ? orderItem.getOriginalPrice() * orderItem.getQuantity()
+                    : orderItem.getSalePrice() * orderItem.getQuantity();
+            totalRefundedPrice.addAndGet(refundAmountPerItem);
+
+            orderItem.setStatus(OrderStatusEnum.CANCELLED);
+            orderItem.setActive(false);
+            orderItemRepository.save(orderItem);
+
+            return Refund.builder()
+                    .orderItemId(orderItem.getPk())
+                    .refundedPrice(totalRefundedPrice.get())
+                    .build();
+        }).toList();
+
+        // [3] 결제 취소 처리
+        PaymentEntity payment = paymentRepository.findByOrderPk(order.getPk()).orElseThrow(()->
+                new PinkCatException("결제건이 존재하지 않습니다", ErrorMessageCode.NO_SUCH_PAYMENT));
+        payment.setStatus(PaymentStatusEnum.CANCELLED);
+        payment.setTotalPrice(payment.getTotalPrice() - totalRefundedPrice.get());
+        payment = paymentRepository.save(payment);
+
+        return CancelOrderResponseDTO.builder()
+                .orderId(order.getPk())
+                .totalRefundedPrice(totalRefundedPrice.get())
+                .refundedAt(payment.getUpdatedAt())
+                .refunds(refunds)
                 .build();
     }
 

@@ -12,8 +12,11 @@ import com.pinkcat.quickreservemvp.product.dto.ProductInfoResponseDTO.Category;
 import com.pinkcat.quickreservemvp.product.dto.ProductInfoResponseDTO.Image;
 import com.pinkcat.quickreservemvp.product.dto.ProductReviewListResponseDTO;
 import com.pinkcat.quickreservemvp.product.dto.ProductReviewListResponseDTO.Review;
+import com.pinkcat.quickreservemvp.product.dto.ProductSearchResponseDTO;
+import com.pinkcat.quickreservemvp.product.dto.ProductSearchResponseDTO.Product;
 import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
 import com.pinkcat.quickreservemvp.product.repository.DiscountRepository;
+import com.pinkcat.quickreservemvp.product.repository.ProductCustomRepository;
 import com.pinkcat.quickreservemvp.product.repository.ProductImageRepository;
 import com.pinkcat.quickreservemvp.product.repository.ProductRepository;
 import com.pinkcat.quickreservemvp.review.entity.ReviewEntity;
@@ -41,6 +44,7 @@ import java.util.List;
 public class ProductServiceImpl  implements ProductService {
 
     private final ProductRepository productRepository;
+    private final ProductCustomRepository productCustomRepository;
     private final CategoryRepository categoryRepository;
     private final CategoryProductRepository categoryProductRepository;
     private final CategoryCustomRepository categoryCustomRepository;
@@ -128,4 +132,48 @@ public class ProductServiceImpl  implements ProductService {
                 .build();
     }
 
+    @Override
+    public ProductSearchResponseDTO search(Long categoryId, int page, int size, String keyword, Integer minPrice,
+                                    Integer maxPrice, String start, String end, Integer minRating, Integer maxRating){
+
+        Pageable pageable = PageRequest.of(page-1, size);
+        LocalDateTime startAt = start != null ? stringToDate(start) : null;
+        LocalDateTime endAt = end != null ? stringToDate(end) : null;
+
+        Page<ProductEntity> productEntities = productCustomRepository.searchProduct(categoryId, page, size, keyword, minPrice, maxPrice,
+                startAt, endAt, minRating, maxRating, pageable);
+
+        List<Product> products = productEntities.stream().map(p -> {
+            String thumbnail = productImageRepository.findThumbnailByProductPk(p.getPk()).orElse(null);
+            Integer discountPrice = discountRepository.findValidDiscountPriceByProduct(p, (LocalDateTime.now(ZoneId.of("Asia/Seoul")))).orElse(null);
+            float discountRate = discountPrice != null ? (float) (p.getPrice() - discountPrice) / p.getPrice() : 0f;
+            String discountRateString = String.format("%.2f", discountRate * 100);
+            return Product.builder()
+                    .productId(p.getPk())
+                    .name(p.getProductName())
+                    .thumbnail(thumbnail)
+                    .price(p.getPrice())
+                    .discountPrice(discountPrice)
+                    .discountRate(discountRateString)
+                    .avgRating(p.getAvgRating().toString())
+                    .status(p.getProductStatus().name())
+                    .saleStartAt(p.getSaleStartAt())
+                    .saleEndAt(p.getSaleEndAt())
+                    .build();
+        }).toList();
+
+        return ProductSearchResponseDTO.builder()
+                .page(page)
+                .totalPages(productEntities.getTotalPages())
+                .size(size)
+                .products(products)
+                .build();
+    }
+
+    private LocalDateTime stringToDate(String date){
+        int year = Integer.parseInt(date.substring(0, 4));
+        int month = Integer.parseInt(date.substring(5, 7));
+        int day = Integer.parseInt(date.substring(8, 10));
+        return LocalDateTime.of(year,month,day,0,0,0);
+    }
 }

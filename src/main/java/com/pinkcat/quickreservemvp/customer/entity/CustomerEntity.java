@@ -33,7 +33,7 @@ public class CustomerEntity extends BaseEntity {
   private String password;
 
   @Comment("고객 핸드폰번호")
-  @Column(name = "customer_phone_number", nullable = false)
+  @Column(name = "customer_phone_number", length = 13, nullable = false)
   @Pattern(regexp = ValidationPatterns.PHONE_NUMBER, message = "올바른 핸드폰 번호 형식이 아닙니다.")
   private String phoneNumber;
 

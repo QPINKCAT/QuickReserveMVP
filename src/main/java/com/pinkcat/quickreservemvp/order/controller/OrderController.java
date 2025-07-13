@@ -27,7 +27,6 @@ public class OrderController {
             @RequestParam(value = "start", required = false) String start,
             @RequestParam(value = "end", required = false) String end){
         return new BaseResponse<>(orderService.getOrderList(user.getUserPk(), page, size, start, end));
-//        return new BaseResponse<>(orderService.getOrderList(1L, page, size, start, end));
     }
 
     @GetMapping("")
@@ -36,7 +35,6 @@ public class OrderController {
             @AuthenticationPrincipal UserPrincipal user,
             @RequestParam(value = "order") String orderNum){
         return new BaseResponse<>(orderService.getOrder(user.getUserPk(), orderNum));
-//        return new BaseResponse<>(orderService.getOrder(1L, orderId));
     }
 
     @PostMapping("")
@@ -46,6 +44,5 @@ public class OrderController {
             @RequestParam(value = "order") String orderNum,
             @RequestBody CancelOrderRequestDTO request){
         return new BaseResponse<>(orderService.cancelOrder(user.getUserPk(), orderNum, request));
-//        return new BaseResponse<>(orderService.cancelOrder(1L, orderNum, request));
     }
 }

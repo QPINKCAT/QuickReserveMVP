@@ -3,6 +3,7 @@ package com.pinkcat.quickreservemvp.wish;
 import com.pinkcat.quickreservemvp.common.enums.GenderEnum;
 import com.pinkcat.quickreservemvp.common.enums.ProductStatusEnum;
 import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
+import com.pinkcat.quickreservemvp.customer.repository.CustomerRepository;
 import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
 import com.pinkcat.quickreservemvp.product.repository.ProductImageRepository;
 import com.pinkcat.quickreservemvp.product.repository.ProductRepository;
@@ -30,6 +31,7 @@ import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -39,6 +41,9 @@ public class WishServiceTest {
 
     @InjectMocks
     private WishServiceImpl wishService;
+
+    @Mock
+    private CustomerRepository customerRepository;
 
     @Mock
     private WishRepository wishRepository;
@@ -51,9 +56,12 @@ public class WishServiceTest {
 
     private List<CustomerProductWishEntity> wishes;
 
+    private CustomerEntity customer;
+    private CustomerProductWishEntity wish;
+
     @BeforeEach
     void setUp() {
-        CustomerEntity customer = CustomerEntity.builder()
+        customer = CustomerEntity.builder()
                 .id("customer1")
                 .email("customer1@gmail.com")
                 .name("김고객")
@@ -61,6 +69,8 @@ public class WishServiceTest {
                 .password("password1")
                 .gender(GenderEnum.FEMALE)
                 .build();
+        customer.setPk(1L);
+        when(customerRepository.findByPkAndActiveTrue(1L)).thenReturn(Optional.of(customer));
 
         wishes = new ArrayList<>();
         for(int i = 1; i <= 20; i++) {
@@ -75,14 +85,14 @@ public class WishServiceTest {
             product.setActive(true);
             product.setCreatedAt(LocalDateTime.now());
             product.setUpdatedAt(null);
-            wishes.add(
-                    CustomerProductWishEntity.builder()
-                            .customer(customer)
-                            .product(product)
-                            .build()
-            );
+            wish = CustomerProductWishEntity.builder()
+                    .customer(customer)
+                    .product(product)
+                    .build();
+            wish.setPk((long) i);
+            wishes.add(wish);
 
-            lenient().when(productRepository.findByPk((long) i)).thenReturn(product);
+            lenient().when(productRepository.findByPk((long) i)).thenReturn(Optional.of(product));
             lenient().when(productImageRepository.findThumbnailByProductPk((long) i)).thenReturn("thumbnail".describeConstable());
 
         }
@@ -98,7 +108,7 @@ public class WishServiceTest {
         Page<CustomerProductWishEntity> mockPage = new PageImpl<>(wishes.subList(0, 20), PageRequest.of(page-1, size), wishes.size());
         when(wishRepository.findAllByCustomerPk(anyLong(), any(Pageable.class))).thenReturn(mockPage);
 
-        WishlistResponseDTO result = wishService.getWishlist(page, size);
+        WishlistResponseDTO result = wishService.getWishlist(1L, page, size);
 
         // then
         assertEquals(1, result.getPage());
@@ -118,7 +128,7 @@ public class WishServiceTest {
         Page<CustomerProductWishEntity> mockPage = new PageImpl<>(wishes.subList(10, 20), PageRequest.of(page-1, size), wishes.size());
         when(wishRepository.findAllByCustomerPk(anyLong(), any(Pageable.class))).thenReturn(mockPage);
 
-        WishlistResponseDTO result = wishService.getWishlist(page, size);
+        WishlistResponseDTO result = wishService.getWishlist(1L, page, size);
 
         // then
         assertEquals(2, result.getPage());
@@ -139,7 +149,7 @@ public class WishServiceTest {
         Page<CustomerProductWishEntity> mockPage = new PageImpl<>(new ArrayList<>(), PageRequest.of(page-1, size), 0);
         when(wishRepository.findAllByCustomerPk(anyLong(), any(Pageable.class))).thenReturn(mockPage);
 
-        WishlistResponseDTO result = wishService.getWishlist(page, size);
+        WishlistResponseDTO result = wishService.getWishlist(1L, page, size);
 
         // then
         assertEquals(1, result.getPage());

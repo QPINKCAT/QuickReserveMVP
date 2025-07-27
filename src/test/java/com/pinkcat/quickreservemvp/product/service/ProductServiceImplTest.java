@@ -11,10 +11,12 @@ import com.pinkcat.quickreservemvp.customer.entity.CustomerEntity;
 import com.pinkcat.quickreservemvp.order.entity.OrderItemEntity;
 import com.pinkcat.quickreservemvp.product.dto.ProductInfoResponseDTO;
 import com.pinkcat.quickreservemvp.product.dto.ProductReviewListResponseDTO;
+import com.pinkcat.quickreservemvp.product.dto.ProductSearchResponseDTO;
 import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
 import com.pinkcat.quickreservemvp.product.entity.ProductImageEntity;
 import com.pinkcat.quickreservemvp.product.repository.DiscountRepository;
 import com.pinkcat.quickreservemvp.product.repository.ProductImageRepository;
+import com.pinkcat.quickreservemvp.product.repository.ProductQueryRepository;
 import com.pinkcat.quickreservemvp.product.repository.ProductRepository;
 import com.pinkcat.quickreservemvp.review.entity.ReviewEntity;
 import com.pinkcat.quickreservemvp.review.repository.ReviewCustomRepository;
@@ -28,14 +30,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -53,6 +57,7 @@ public class ProductServiceImplTest {
     @Mock private ReviewRepository reviewRepository;
     @Mock private ReviewCustomRepository reviewCustomRepository;
     @Mock private ProductImageRepository productImageRepository;
+    @Mock private ProductQueryRepository productQueryRepository;
 
     private CustomerEntity customer;
     private ProductEntity product;
@@ -164,4 +169,59 @@ public class ProductServiceImplTest {
         assertEquals(1, dto.getReviews().size());
         assertEquals("user1", dto.getReviews().get(0).getCustomerId());
     }
+
+    @DisplayName("상품 검색 성공")
+    @Test
+    void searchSuccess() {
+        // given
+        Long categoryId = 1L;
+        int page = 1;
+        int size = 10;
+        String keyword = "샴푸";
+        Integer minPrice = 1000;
+        Integer maxPrice = 10000;
+        String start = "2023-01-01";
+        String end = "2023-12-31";
+        Integer minRating = 3;
+        Integer maxRating = 5;
+
+        List<ProductEntity> products = new ArrayList<>();
+
+        ProductEntity product1 = ProductEntity.builder()
+                .productName("남현실의디너쇼")
+                .price(150000)
+                .avgRating(9.0F)
+                .productStatus(ProductStatusEnum.ON)
+                .build();
+        product1.setPk(1L);
+
+        ProductEntity product2 = ProductEntity.builder()
+                .productName("남현실팬미팅")
+                .price(70000)
+                .avgRating(9.7F)
+                .productStatus(ProductStatusEnum.ON)
+                .build();
+        product2.setPk(2L);
+
+        products.add(product1);
+        products.add(product2);
+
+        Pageable pageable = PageRequest.of(page-1, size);
+        Page<ProductEntity> pageResult = new PageImpl<>(products, pageable, products.size());
+
+        when(productQueryRepository.searchProduct(
+                eq(categoryId), eq(page), eq(size), eq(keyword), eq(minPrice), eq(maxPrice),
+                any(LocalDateTime.class), any(LocalDateTime.class), eq(minRating), eq(maxRating), eq(pageable)
+        )).thenReturn(pageResult);
+
+        // when
+        ProductSearchResponseDTO result = productService.search(
+                categoryId, page, size, keyword, minPrice, maxPrice, start, end, minRating, maxRating);
+
+        // then
+        assertNotNull(result);
+        assertEquals("남현실의디너쇼", result.getProducts().get(0).getName());
+        assertEquals("남현실팬미팅", result.getProducts().get(1).getName());
+    }
+
 }

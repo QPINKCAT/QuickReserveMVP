@@ -14,7 +14,6 @@ import com.pinkcat.quickreservemvp.wish.dto.WishlistResponseDTO;
 import com.pinkcat.quickreservemvp.wish.entity.CustomerProductWishEntity;
 import com.pinkcat.quickreservemvp.wish.repository.CustomerProductWishRepository;
 import com.pinkcat.quickreservemvp.wish.repository.WishRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -84,11 +83,12 @@ public class WishServiceImpl implements WishService {
     @Transactional
     public boolean deleteWishlist(Long userPk, DeleteWishlistRequestDTO request) {
 
-      CustomerEntity customer = customerRepository.findByPkAndActiveTrue(userPk).orElseThrow(() ->
+        customerRepository.findByPkAndActiveTrue(userPk).orElseThrow(() ->
               new PinkCatException("비활성화된 계정입니다. 관리자에게 문의해주세요.", ErrorMessageCode.CUSTOMER_INACTIVE));
 
-      Optional<CustomerProductWishEntity> wish = wishRepository.findByPk(request.getWishId());
-        wishRepository.delete(wish.orElseThrow(() -> new EntityNotFoundException("데이터가 없습니다.")));
+        Optional<CustomerProductWishEntity> wish = wishRepository.findByPk(request.getWishId());
+            wishRepository.delete(wish.orElseThrow(() -> new PinkCatException(ErrorMessageCode.NO_SUCH_WISH_ITEM)));
+
         return true;
     }
 

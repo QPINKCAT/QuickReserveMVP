@@ -38,7 +38,10 @@ public enum ErrorMessageCode {
   INVALID_QUANTITY(40702, "장바구니 상품의 최소 수량은 1개입니다."),
 
   // Payment : 40800 ~ 40899
-  NO_SUCH_PAYMENT(40801, "결제건이 존재하지 않습니다.");
+  NO_SUCH_PAYMENT(40801, "결제건이 존재하지 않습니다."),
+
+  // Wish : 40900 ~ 40999
+  NO_SUCH_WISH_ITEM(40901, "존재하지 않는 위시 상품입니다.");
 
   private final int codeValue;
   private final String message;

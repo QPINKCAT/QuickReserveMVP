@@ -93,7 +93,7 @@ public class CartServiceImplTest {
 
     @DisplayName("장바구니 수량 0 미만으로 수정시 실패")
     @Test
-    void updateCart_whenQuantityIsZero_thenThrowException() {
+    void updateCartFailQuantityLessThanZero() {
         UpdateCartItemRequestDTO request = new UpdateCartItemRequestDTO();
         ReflectionTestUtils.setField(request, "cartItemId", 10L);
         ReflectionTestUtils.setField(request, "quantity", 0);

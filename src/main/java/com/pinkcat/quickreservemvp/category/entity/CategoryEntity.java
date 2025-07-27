@@ -26,6 +26,6 @@ public class CategoryEntity extends BaseEntity {
 
     @Comment("상위 카테고리")
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "top_category_pk", nullable = false, updatable = false)
+    @JoinColumn(name = "top_category_pk", updatable = false)
     private CategoryEntity topCategory;
 }

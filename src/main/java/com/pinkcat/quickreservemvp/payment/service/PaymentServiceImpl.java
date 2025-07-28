@@ -100,7 +100,7 @@ public class PaymentServiceImpl implements PaymentService {
 
     private boolean isAvailable(LocalDateTime start, LocalDateTime end) {
         LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Seoul"));
-        return start.isAfter(now) && end.isBefore(now);
+        return start.isBefore(now) && end.isAfter(now);
     }
 
     private static final String CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";

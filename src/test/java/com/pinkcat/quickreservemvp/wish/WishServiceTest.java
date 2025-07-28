@@ -16,6 +16,7 @@ import com.pinkcat.quickreservemvp.wish.entity.CustomerProductWishEntity;
 import com.pinkcat.quickreservemvp.wish.repository.CustomerProductWishRepository;
 import com.pinkcat.quickreservemvp.wish.repository.WishRepository;
 import com.pinkcat.quickreservemvp.wish.service.WishServiceImpl;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -280,5 +281,14 @@ public class WishServiceTest {
 
         assertEquals(ErrorMessageCode.NO_SUCH_WISH_ITEM, e.getErrorMessageCode());
         verify(wishRepository, never()).delete(any());
+    }
+
+    @AfterEach
+    void tearDown(){
+        customerRepository.deleteAll();
+        wishRepository.deleteAll();
+        productImageRepository.deleteAll();
+        productRepository.deleteAll();
+        customerProductWishRepository.deleteAll();
     }
 }

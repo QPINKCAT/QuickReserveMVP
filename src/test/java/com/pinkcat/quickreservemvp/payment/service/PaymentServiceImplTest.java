@@ -130,7 +130,7 @@ public class PaymentServiceImplTest {
         assertEquals(ErrorMessageCode.OUT_OF_STOCK, e.getErrorMessageCode());
     }
 
-    @DisplayName("결재 실패 : 판매중이 아닌 상품")
+    @DisplayName("결제 실패 : 판매중이 아닌 상품")
     @Test
     void paymentFailProductUnavailable() {
         // given

@@ -1,4 +1,4 @@
-package review.service;
+package com.pinkcat.quickreservemvp.service;
 
 import com.pinkcat.quickreservemvp.common.enums.OrderStatusEnum;
 import com.pinkcat.quickreservemvp.common.enums.ProductStatusEnum;

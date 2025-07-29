@@ -47,6 +47,7 @@ public class ProductEntity extends BaseEntity {
     @Column(name = "product_review_count")
     private Integer reviewCnt;
 
+    @Setter
     @Enumerated(EnumType.STRING)
     @Comment("상품 상태")
     @Column(name = "product_status")

@@ -37,7 +37,6 @@ public class ReviewServiceImpl implements ReviewService{
 
     @Override
     public ReviewResponseDTO getReview(Long reviewId){
-        log.info("====리뷰 조회");
 
         ReviewEntity review = reviewRepository.findByPk(reviewId).orElseThrow(() ->
             new PinkCatException("존재하지 않는 리뷰입니다.", ErrorMessageCode.NO_SUCH_REVIEW));
@@ -155,7 +154,7 @@ public class ReviewServiceImpl implements ReviewService{
         ReviewEntity review = reviewRepository.findByPk(reviewId).orElseThrow(() ->
             new PinkCatException("존재하지 않는 리뷰입니다.", ErrorMessageCode.NO_SUCH_REVIEW));
 
-        if (!Objects.equals(customer.getPk(), userPk)) {
+        if (!Objects.equals(review.getCustomer().getPk(), customer.getPk())) {
             throw new PinkCatException("본인이 작성한 리뷰가 아닙니다.", ErrorMessageCode.INVALID_USER);
         }
 

@@ -42,8 +42,7 @@ public class ReviewServiceImpl implements ReviewService{
         ReviewEntity review = reviewRepository.findByPk(reviewId).orElseThrow(() ->
             new PinkCatException("존재하지 않는 리뷰입니다.", ErrorMessageCode.NO_SUCH_REVIEW));
 
-        // active 타입 논의 필요
-//        if (review.getActive() == 0) throw new PinkCatException("존재하지 않는 리뷰입니다", ErrorMessageCode.NO_SUCH_REVIEW);
+        if (!review.getActive()) throw new PinkCatException("존재하지 않는 리뷰입니다", ErrorMessageCode.NO_SUCH_REVIEW);
 
         return ReviewResponseDTO.builder()
             .rating(review.getRating())

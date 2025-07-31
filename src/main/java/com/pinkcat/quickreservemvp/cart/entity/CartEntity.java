@@ -30,7 +30,7 @@ public class CartEntity extends BaseEntity {
     private CustomerEntity customer;
 
     @Comment("상품")
-    @ManyToOne (fetch = FetchType.LAZY)
+    @OneToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "product_pk", nullable = false, updatable = false)
     private ProductEntity product;
 }

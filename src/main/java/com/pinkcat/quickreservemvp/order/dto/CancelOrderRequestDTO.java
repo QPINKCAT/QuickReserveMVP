@@ -1,10 +1,14 @@
 package com.pinkcat.quickreservemvp.order.dto;
 
+import java.util.ArrayList;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.util.List;
 
+@Builder
 @Getter
 public class CancelOrderRequestDTO {
-    List<Long> orderItemIds;
+    @Builder.Default
+    List<Long> orderItemIds = new ArrayList<>();
 }

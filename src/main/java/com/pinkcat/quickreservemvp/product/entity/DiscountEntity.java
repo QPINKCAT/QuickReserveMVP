@@ -18,15 +18,15 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AttributeOverride(name = "pk", column = @Column(name = "discount_pk"))
 public class DiscountEntity extends BaseEntity {
-    @Comment("할인이 적용된 가격")
+    @Comment("할인 적용 가격")
     @Column(name = "discount_price")
     private Integer discountPrice;
 
-    @Comment("할인 시작일")
+    @Comment("할인 시작일시")
     @Column(name = "discount_start_at")
     private LocalDateTime startAt;
 
-    @Comment("할인 종료일")
+    @Comment("할인 종료일시")
     @Column(name = "discount_end_at")
     private LocalDateTime endAt;
 

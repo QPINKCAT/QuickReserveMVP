@@ -1,4 +1,4 @@
-package com.pinkcat.quickreservemvp.service;
+package com.pinkcat.quickreservemvp.review.service;
 
 import com.pinkcat.quickreservemvp.common.enums.OrderStatusEnum;
 import com.pinkcat.quickreservemvp.common.enums.ProductStatusEnum;
@@ -16,7 +16,6 @@ import com.pinkcat.quickreservemvp.review.dto.UpdateReviewRequestDTO;
 import com.pinkcat.quickreservemvp.review.dto.WriteReviewRequestDTO;
 import com.pinkcat.quickreservemvp.review.entity.ReviewEntity;
 import com.pinkcat.quickreservemvp.review.repository.ReviewRepository;
-import com.pinkcat.quickreservemvp.review.service.ReviewServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,6 +32,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @ExtendWith(MockitoExtension.class)
 public class ReviewServiceImplTest {
 

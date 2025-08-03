@@ -1,5 +1,6 @@
 package com.pinkcat.quickreservemvp.hotdeal.entity;
 
+import com.pinkcat.quickreservemvp.common.enums.HotDealPublicStatusEnum;
 import com.pinkcat.quickreservemvp.common.model.BaseEntity;
 import jakarta.persistence.AttributeOverride;
 import jakarta.persistence.Column;
@@ -23,7 +24,7 @@ import org.hibernate.validator.constraints.Length;
 public class HotDealEntity extends BaseEntity {
     @Comment("이름")
     @Column(name = "hot_deal_name")
-    @Length(max = 255)
+    @Length(max = 100)
     private String name;
 
     @Comment("설명")
@@ -32,6 +33,7 @@ public class HotDealEntity extends BaseEntity {
 
     @Comment("썸네일")
     @Column(name = "hot_deal_thumbnail")
+    @Length(max = 255)
     private String thumbnail;
 
     @Comment("핫딜 시작일")
@@ -41,4 +43,8 @@ public class HotDealEntity extends BaseEntity {
     @Comment("핫딜 종료일")
     @Column(name = "hot_deal_end_at")
     private LocalDateTime endAt;
+
+    @Comment("공개 상태")
+    @Column(name = "hot_deal_public_status", nullable = false)
+    private HotDealPublicStatusEnum publicStatus;
 }

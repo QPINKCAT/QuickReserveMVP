@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
-import com.pinkcat.quickreservemvp.hotdeal.repository.HoteDealProductRepository;
+import com.pinkcat.quickreservemvp.hotdeal.repository.HotDealProductRepository;
 import com.pinkcat.quickreservemvp.product.entity.ProductEntity;
 import com.pinkcat.quickreservemvp.product.repository.DiscountRepository;
 import com.pinkcat.quickreservemvp.product.repository.ProductImageRepository;
@@ -34,7 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class HotDealServiceImpl implements HotDealService{
 
     private final HotDealRepository hotDealRepository;
-    private final HoteDealProductRepository hoteDealProductRepository;
+    private final HotDealProductRepository hotDealProductRepository;
     private final DiscountRepository discountRepository;
     private final ProductImageRepository productImageRepository;
 
@@ -81,7 +81,7 @@ public class HotDealServiceImpl implements HotDealService{
         }
 
         Pageable pageable = PageRequest.of(page-1, size);
-        Page<HotDealProductEntity> productList = hoteDealProductRepository.findAllByHotDealPk(hotDealPk, pageable);
+        Page<HotDealProductEntity> productList = hotDealProductRepository.findAllByHotDealPk(hotDealPk, pageable);
         List<Product> products = productList.stream()
             .map(p -> {
                 ProductEntity product = p.getProduct();

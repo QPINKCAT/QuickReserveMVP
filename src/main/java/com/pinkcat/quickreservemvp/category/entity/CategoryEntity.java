@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
+import org.hibernate.validator.constraints.Length;
 
 @Entity
 @Table(name = "category")
@@ -17,7 +18,8 @@ import org.hibernate.annotations.Comment;
 @AttributeOverride(name = "pk", column = @Column(name = "category_pk"))
 public class CategoryEntity extends BaseEntity {
     @Comment("카테고리명")
-    @Column(name = "category_name")
+    @Column(name = "category_name", nullable = false)
+    @Length(min = 2, max = 50)
     private String name;
 
     @Comment("카테고리 순서")

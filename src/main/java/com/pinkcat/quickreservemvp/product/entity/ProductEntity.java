@@ -22,7 +22,7 @@ import org.hibernate.annotations.Comment;
 @AttributeOverride(name = "pk", column = @Column(name = "product_pk"))
 public class ProductEntity extends BaseEntity {
     @Comment("상품명")
-    @Column(name = "product_name", length = 30, unique = true, nullable = false)
+    @Column(name = "product_name", length = 60, unique = true, nullable = false)
     private String productName;
 
     @Comment("상품 설명")
@@ -30,11 +30,11 @@ public class ProductEntity extends BaseEntity {
     private String productDescription;
 
     @Comment("상품 가격")
-    @Column(name = "product_price")
+    @Column(name = "product_price", nullable = false)
     private Integer price;
 
     @Comment("재고 수량")
-    @Column(name = "product_stock")
+    @Column(name = "product_stock", nullable = false)
     private Integer stock;
 
     @Setter

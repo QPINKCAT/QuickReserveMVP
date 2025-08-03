@@ -16,7 +16,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Comment;
 
 @Entity
@@ -29,7 +28,6 @@ import org.hibernate.annotations.Comment;
 public class HotDealProductEntity extends BaseEntity {
     @Comment("보기 설정")
     @Column(name = "hot_deal_product_visible", nullable = false)
-    @ColumnDefault("ON")
     private HotDealProductEnum visible;
 
     @Comment("상품")
